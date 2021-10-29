@@ -51,8 +51,9 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    if random.random() < 0.005:
+    if len(food.sprites()) // 2 < 2:
         new_food()
+
     all_sprites.update()
 
     # Рендеринг

@@ -50,8 +50,8 @@ class Food(pygame.sprite.Sprite):
 class Smell(pygame.sprite.Sprite):
     def __init__(self, x, y, sz):
         pygame.sprite.Sprite.__init__(self)
-        self.size = 80
-        #self.maxsize = 70
+        self.size = 2
+        self.maxsize = 80
         self.image = pygame.Surface((self.size, self.size))
         self.image.set_alpha(128)
         self.image.fill(constants.GREEN.value)
@@ -61,6 +61,17 @@ class Smell(pygame.sprite.Sprite):
         pygame.draw.circle(self.image,
                            constants.YELLOW.value,
                            (self.size // 2, self.size // 2), self.size // 2)
+
+    def update(self):
+        if self.size < self.maxsize:
+            self.size += 2
+            self.image = pygame.transform.scale(self.image, (self.size, self.size))
+            self.image.fill(constants.GREEN.value)
+            pygame.draw.circle(self.image,
+                               constants.YELLOW.value,
+                               (self.size // 2, self.size // 2), self.size // 2)
+            self.rect.centerx -= self.size / self.maxsize
+            self.rect.bottom -= self.size / self.maxsize
 
 class Wall(pygame.sprite.Sprite):
     def __init__(self):
