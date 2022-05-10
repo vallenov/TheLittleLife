@@ -1,7 +1,7 @@
 import pygame
 import random
 
-from TLLclasses import Constants, LL, Food, Wall
+from TLLclasses import Constants, Object, Cell, Food, Wall
 
 
 class Game:
@@ -14,26 +14,24 @@ class Game:
 
         self.font_name = pygame.font.match_font('arial')
 
-        self.cells = pygame.sprite.Group()
-        self.all_sprites = pygame.sprite.Group()
-        self.food = pygame.sprite.Group()
-        self.walls = pygame.sprite.Group()
-
-    def born(self):
-        new_life = LL()
-        self.cells.add(new_life)
-        self.all_sprites.add(new_life)
-
-    def walls_generate(self):
+    @staticmethod
+    def walls_generate():
         for _ in range(random.randint(20, 100)):
             w = Wall()
-            self.all_sprites.add(w)
-            self.walls.add(w)
+            Object.all_objects.add(w)
+            Object.walls.add(w)
 
-    def new_food(self):
+    @staticmethod
+    def spawn():
+        new_life = Cell()
+        Object.cells.add(new_life)
+        Object.all_objects.add(new_life)
+
+    @staticmethod
+    def new_food():
         f = Food()
-        self.all_sprites.add(f)
-        self.food.add(f)
+        Object.all_objects.add(f)
+        Object.food.add(f)
 
     def draw_text(self, surf, text, size, x, y):
         font = pygame.font.Font(self.font_name, size)
@@ -46,7 +44,7 @@ class Game:
         # walls_generate()
         running = True
         for _ in range(10):
-            self.born()
+            self.spawn()
         while running:
             # Держим цикл на правильной скорости
             self.clock.tick(Constants.FPS.value)
@@ -55,24 +53,24 @@ class Game:
                 # check for closing window
                 if event.type == pygame.QUIT:
                     running = False
-            for cell in self.cells:
-                for ind, f in enumerate(self.food):
+            for cell in Object.cells:
+                self.draw_text(self.screen, 'AAAAAAAAAAAAAAA', 10, cell.rect.centerx,
+                               cell.rect.bottom - cell.size - 2)
+                for ind, f in enumerate(Object.food):
                     if cell.rect.colliderect(f.rect):
-                        self.food.remove(f)
-                        self.all_sprites.remove(f)
-                        del f
-                        cell.eat(10)
+                        cell.eat(f, 100)
 
-            if len(self.food.sprites()) < 500:
+            if len(Object.food.sprites()) < 500:
                 self.new_food()
 
-            self.all_sprites.update()
+            Object.all_objects.update()
 
             # Рендеринг
             self.screen.fill(Constants.GREEN.value)
-            self.all_sprites.draw(self.screen)
+            Object.all_objects.draw(self.screen)
 
-            #draw_text(screen, 'LL', 10, LittleLife.rect.centerx, LittleLife.rect.bottom - LittleLife.size-2)
+
+            #self.draw_text(self.screen, 'LL', 10, LittleLife.rect.centerx, LittleLife.rect.bottom - LittleLife.size-2)
 
             pygame.display.flip()
 
