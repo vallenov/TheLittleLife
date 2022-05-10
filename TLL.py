@@ -14,12 +14,15 @@ class Game:
 
         self.font_name = pygame.font.match_font('arial')
 
+        self.cells = pygame.sprite.Group()
         self.all_sprites = pygame.sprite.Group()
         self.food = pygame.sprite.Group()
         self.walls = pygame.sprite.Group()
 
-        self.LittleLife = LL()
-        self.all_sprites.add(self.LittleLife)
+    def born(self):
+        new_life = LL()
+        self.cells.add(new_life)
+        self.all_sprites.add(new_life)
 
     def walls_generate(self):
         for _ in range(random.randint(20, 100)):
@@ -42,6 +45,8 @@ class Game:
     def run(self):
         # walls_generate()
         running = True
+        for _ in range(10):
+            self.born()
         while running:
             # Держим цикл на правильной скорости
             self.clock.tick(Constants.FPS.value)
@@ -50,8 +55,15 @@ class Game:
                 # check for closing window
                 if event.type == pygame.QUIT:
                     running = False
+            for cell in self.cells:
+                for ind, f in enumerate(self.food):
+                    if cell.rect.colliderect(f.rect):
+                        self.food.remove(f)
+                        self.all_sprites.remove(f)
+                        del f
+                        cell.eat(10)
 
-            if len(self.food.sprites()) // 2 < 2:
+            if len(self.food.sprites()) < 500:
                 self.new_food()
 
             self.all_sprites.update()
