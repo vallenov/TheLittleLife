@@ -4,8 +4,8 @@ import random
 
 
 class Constants(enum.Enum):
-    HEIGHT = 500  # высота мира
-    WIDTH = 1000  # ширина мира
+    HEIGHT = 900  # высота мира
+    WIDTH = 1500  # ширина мира
     FPS = 30
 
     WHITE = (255, 255, 255)
@@ -19,6 +19,7 @@ class Constants(enum.Enum):
 class LL(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
+        self.energy = 50
         self.size = 10
         self.image = pygame.Surface((self.size, self.size))
         self.image.fill(Constants.RED.value)
@@ -26,12 +27,17 @@ class LL(pygame.sprite.Sprite):
         self.rect.centerx = Constants.WIDTH.value // 2
         self.rect.bottom = Constants.HEIGHT.value // 2
 
-        self.speedx = 0
-        self.speedy = 0
+        self.speedx = random.randint(-1, 1)
+        self.speedy = random.randint(-1, 1)
+
+    def eat(self, energy):
+        self.energy += energy
 
     def update(self):
-        self.rect.x += 1 #random.randint(-1, 1)
-        self.rect.y += random.randint(-1, 1)
+        self.speedx = -self.speedx if Constants.WIDTH.value < self.rect.x or self.rect.x < 0 else self.speedx
+        self.speedy = -self.speedy if Constants.HEIGHT.value < self.rect.y or self.rect.y < 0 else self.speedy
+        self.rect.x += self.speedx # random.randint(-1, 1)
+        self.rect.y += self.speedy # random.randint(-1, 1)
 
 
 class Food(pygame.sprite.Sprite):
