@@ -6,7 +6,6 @@ import random
 class Constants(enum.Enum):
     HEIGHT = 900  # высота мира
     WIDTH = 1500  # ширина мира
-    FPS = 1500
 
     WHITE = (255, 255, 255)
     BLACK = (0, 0, 0)
@@ -14,6 +13,71 @@ class Constants(enum.Enum):
     GREEN = (50, 100, 50)
     BLUE = (0, 0, 255)
     YELLOW = (100, 100, 0)
+
+
+class Game:
+    pygame.init()
+    pygame.mixer.init()
+    screen = pygame.display.set_mode((Constants.WIDTH.value, Constants.HEIGHT.value))
+    pygame.display.set_caption("TheLittleLife")
+    clock = pygame.time.Clock()
+
+    font_name = pygame.font.match_font('arial')
+
+    FPS = 100
+
+    @staticmethod
+    def walls_generate():
+        for _ in range(random.randint(20, 100)):
+            w = Wall()
+            Object.all_objects.add(w)
+            Object.walls.add(w)
+
+    @staticmethod
+    def spawn():
+        new_life = Cell()
+        Object.cells.add(new_life)
+        Object.all_objects.add(new_life)
+
+    @staticmethod
+    def new_food():
+        f = Food()
+        Object.all_objects.add(f)
+        Object.food.add(f)
+
+    def run(self):
+        # walls_generate()
+        running = True
+        for _ in range(10):
+            self.spawn()
+        while running:
+            self.screen.fill(Constants.GREEN.value)
+            Object.all_objects.update()
+            self.clock.tick(self.FPS)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 4:
+                        if self.FPS < 200:
+                            self.FPS += 10
+                    if event.button == 5:
+                        if self.FPS > 10:
+                            self.FPS -= 10
+            for cell in Object.cells:
+                for ind, f in enumerate(Object.food):
+                    if cell.rect.colliderect(f.rect):
+                        cell.eat(f, 100)
+
+            if len(Object.food.sprites()) < 500:
+                self.new_food()
+
+            # Рендеринг
+            Object.all_objects.draw(self.screen)
+
+            pygame.display.flip()
+
+        pygame.quit()
 
 
 class Object(pygame.sprite.Sprite):
@@ -24,6 +88,19 @@ class Object(pygame.sprite.Sprite):
 
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
+
+
+class Text(Object):
+    def __init__(self, text: str, size: int, xy: tuple):
+        pygame.sprite.Sprite.__init__(self)
+        self.font = pygame.font.SysFont(Game.font_name, size)
+        self.text_surface = self.font.render(text, True, Constants.WHITE.value)
+        self.text_rect = self.text_surface.get_rect()
+
+    def update(self, text, xy: tuple):
+        self.text_surface = self.font.render(text, True, Constants.WHITE.value)
+        self.text_rect.midtop = xy
+        Game.screen.blit(self.text_surface, self.text_rect)
 
 
 class Cell(Object):
@@ -38,8 +115,10 @@ class Cell(Object):
         self.rect.centerx = x
         self.rect.bottom = y
 
-        self.speedx = random.randint(-1, 1)
-        self.speedy = random.randint(-1, 1)
+        self.text = Text(str(self.energy), 20, (self.rect.x, self.rect.y))
+
+        self.speedx = random.randint(-1, 1) * self.size
+        self.speedy = random.randint(-1, 1) * self.size
 
     def born(self):
         print(len(Object.cells))
@@ -53,9 +132,10 @@ class Cell(Object):
         del self
 
     def eat(self, food, energy):
-        Object.food.remove(food)
-        Object.all_objects.remove(food)
-        self.energy += energy
+        if self.energy < 1000:
+            Object.food.remove(food)
+            Object.all_objects.remove(food)
+            self.energy += energy
 
     def check_energy(self):
         if self.energy <= 0:
@@ -69,14 +149,15 @@ class Cell(Object):
         self.check_energy()
         self.speedx = -self.speedx if Constants.WIDTH.value < self.rect.x or self.rect.x < 0 else self.speedx
         self.speedy = -self.speedy if Constants.HEIGHT.value < self.rect.y or self.rect.y < 0 else self.speedy
-        self.rect.x += self.speedx # random.randint(-1, 1)
-        self.rect.y += self.speedy # random.randint(-1, 1)
+        self.rect.x += self.speedx
+        self.rect.y += self.speedy
+        self.text.update(str(self.energy // 10), (self.rect.x + 10, self.rect.y - 20))
 
 
 class Food(Object):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.size = 4
+        self.size = 5
         self.image = pygame.Surface((self.size, self.size))
         self.image.fill(Constants.BLACK.value)
         self.rect = self.image.get_rect()
