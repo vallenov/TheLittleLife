@@ -6,7 +6,6 @@ import random
 class Constants(enum.Enum):
     HEIGHT = 900  # высота мира
     WIDTH = 1500  # ширина мира
-    FPS = 5
 
     WHITE = (255, 255, 255)
     BLACK = (0, 0, 0)
@@ -24,6 +23,8 @@ class Game:
     clock = pygame.time.Clock()
 
     font_name = pygame.font.match_font('arial')
+
+    FPS = 100
 
     @staticmethod
     def walls_generate():
@@ -53,18 +54,23 @@ class Game:
             self.screen.fill(Constants.GREEN.value)
             Object.all_objects.update()
             # Держим цикл на правильной скорости
-            self.clock.tick(Constants.FPS.value)
+            self.clock.tick(self.FPS)
             # Ввод процесса (события)
             for event in pygame.event.get():
                 # check for closing window
                 if event.type == pygame.QUIT:
                     running = False
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 4:
+                        if self.FPS < 200:
+                            self.FPS += 10
+                    if event.button == 5:
+                        if self.FPS > 10:
+                            self.FPS -= 10
             for cell in Object.cells:
                 for ind, f in enumerate(Object.food):
                     if cell.rect.colliderect(f.rect):
                         cell.eat(f, 100)
-                # self.draw_text(self.screen, str(cell.energy), 30, cell.rect.centerx,
-                #                cell.rect.bottom - cell.size - 2)
 
             if len(Object.food.sprites()) < 500:
                 self.new_food()
@@ -93,12 +99,12 @@ class Text(Object):
         self.font = pygame.font.SysFont(Game.font_name, size)
         self.text_surface = self.font.render(text, True, Constants.WHITE.value)
         self.text_rect = self.text_surface.get_rect()
-        self.text_rect.midtop = xy
 
     def update(self, text, xy: tuple):
         self.text_surface = self.font.render(text, True, Constants.WHITE.value)
         self.text_rect.midtop = xy
         Game.screen.blit(self.text_surface, self.text_rect)
+
 
 class Cell(Object):
 
@@ -106,7 +112,6 @@ class Cell(Object):
         pygame.sprite.Sprite.__init__(self)
         self.energy = 500
         self.size = 20
-        # self.font = pygame.font.Font(self.font_name)
         self.image = pygame.Surface((self.size, self.size))
         self.image.fill(Constants.RED.value)
         self.rect = self.image.get_rect()
@@ -130,9 +135,10 @@ class Cell(Object):
         del self
 
     def eat(self, food, energy):
-        Object.food.remove(food)
-        Object.all_objects.remove(food)
-        self.energy += energy
+        if self.energy < 1000:
+            Object.food.remove(food)
+            Object.all_objects.remove(food)
+            self.energy += energy
 
     def check_energy(self):
         if self.energy <= 0:
