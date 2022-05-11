@@ -53,11 +53,8 @@ class Game:
         while running:
             self.screen.fill(Constants.GREEN.value)
             Object.all_objects.update()
-            # Держим цикл на правильной скорости
             self.clock.tick(self.FPS)
-            # Ввод процесса (события)
             for event in pygame.event.get():
-                # check for closing window
                 if event.type == pygame.QUIT:
                     running = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -160,7 +157,7 @@ class Cell(Object):
 class Food(Object):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.size = 4
+        self.size = 5
         self.image = pygame.Surface((self.size, self.size))
         self.image.fill(Constants.BLACK.value)
         self.rect = self.image.get_rect()
