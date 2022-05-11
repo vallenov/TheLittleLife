@@ -59,11 +59,17 @@ class Game:
                     running = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 4:
-                        if self.FPS < 200:
-                            self.FPS += 10
+                        if self.FPS < 10:
+                            self.FPS += 1
+                        elif 10 <= self.FPS < 200:
+                            self.FPS += 5
                     if event.button == 5:
                         if self.FPS > 10:
                             self.FPS -= 10
+                        elif 1 < self.FPS <= 10:
+                            self.FPS -= 1
+                        elif self.FPS <= 0:
+                            self.FPS = 1
             for cell in Object.cells:
                 for ind, f in enumerate(Object.food):
                     if cell.rect.colliderect(f.rect):
