@@ -59,11 +59,17 @@ class Game:
                     running = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 4:
-                        if self.FPS < 200:
-                            self.FPS += 10
+                        if self.FPS < 10:
+                            self.FPS += 1
+                        elif 10 <= self.FPS < 200:
+                            self.FPS += 5
                     if event.button == 5:
                         if self.FPS > 10:
                             self.FPS -= 10
+                        elif 1 < self.FPS <= 10:
+                            self.FPS -= 1
+                        elif self.FPS <= 0:
+                            self.FPS = 1
             for cell in Object.cells:
                 for ind, f in enumerate(Object.food):
                     if cell.rect.colliderect(f.rect):
@@ -85,6 +91,8 @@ class Object(pygame.sprite.Sprite):
     cells = pygame.sprite.Group()
     food = pygame.sprite.Group()
     walls = pygame.sprite.Group()
+
+    cnt_of_cells_ever = 0
 
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -121,8 +129,8 @@ class Cell(Object):
         self.speedy = random.randint(-1, 1) * self.size
 
     def born(self):
-        print(len(Object.cells))
         new_life = Cell(x=self.rect.x, y=self.rect.y)
+        Object.cnt_of_cells_ever += 1
         Object.cells.add(new_life)
         Object.all_objects.add(new_life)
 
