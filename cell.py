@@ -105,10 +105,17 @@ class Cell(GObject):
                 self.next_step(self.goal)
             except AttributeError:
                 pass
-        self.speedx = -self.speedx if Constants.WIDTH.value <= self.rect.centerx \
-                                      or self.rect.centerx <= 0 else self.speedx
-        self.speedy = -self.speedx if Constants.HEIGHT.value <= self.rect.centery \
-                                      or self.rect.centery <= 0 else self.speedy
+
+        if self.rect.centerx >= Constants.WIDTH.value:
+            self.rect.centerx = self.size
+        elif self.rect.centerx <= 0:
+            self.rect.centerx = Constants.WIDTH.value
+
+        if self.rect.centery >= Constants.HEIGHT.value:
+            self.rect.centery = self.size
+        elif self.rect.centery <= 0:
+            self.rect.centery = Constants.HEIGHT.value
+
         self.rect.centerx += self.speedx
         self.rect.centery += self.speedy
         self.text.update(str(self.energy // 10), (self.rect.x + 10, self.rect.y - 20))
