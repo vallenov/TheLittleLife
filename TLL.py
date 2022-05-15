@@ -15,7 +15,7 @@ class Game:
 
     font_name = pygame.font.match_font('arial')
 
-    FPS = 100
+    FPS = 10
 
     @staticmethod
     def walls_generate():
@@ -39,8 +39,10 @@ class Game:
     def run(self):
         # walls_generate()
         running = True
-        for _ in range(10):
+        for _ in range(1):
             self.spawn()
+        # for _ in range(500):
+        #     self.new_food()
         while running:
             GObject.screen.fill(Constants.GREEN.value)
             GObject.all_objects.update()

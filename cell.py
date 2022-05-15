@@ -9,7 +9,7 @@ class Cell(GObject):
     def __init__(self, x=Constants.WIDTH.value // 2, y=Constants.HEIGHT.value // 2):
         pygame.sprite.Sprite.__init__(self)
         self.energy = 500
-        self.size = 20
+        self.size = 15
         self.image = pygame.Surface((self.size, self.size))
         self.image.fill(Constants.RED.value)
         self.rect = self.image.get_rect()
@@ -20,8 +20,8 @@ class Cell(GObject):
         self.sight = Sight(self.rect.x, self.rect.y)
         self.goal = None
 
-        self.speedx = random.randint(-1, 1) * self.size
-        self.speedy = random.randint(-1, 1) * self.size
+        self.speedx = random.choice([-1, 1]) * self.size
+        self.speedy = random.choice([-1, 1]) * self.size
 
     def born(self):
         new_life = Cell(x=self.rect.x, y=self.rect.y)
@@ -42,6 +42,7 @@ class Cell(GObject):
             GObject.all_objects.remove(food)
             self.energy += energy
             self.goal = None
+        print(f'Current food: {len(GObject.food)}')
 
     def check_energy(self):
         if self.energy <= 0:
@@ -50,10 +51,43 @@ class Cell(GObject):
             self.born()
             self.energy -= 700
 
-# 00 01 02 03
-# 10 11 12 13
-# 20 21 22 23
-# 30 31 32 33
+    def next_step(self, goal):
+        dex = self.rect.centerx - goal.rect.centerx
+        if abs(dex) < self.size / 2:
+            if dex > 0:
+                self.speedx = -self.size
+                self.speedy = 0
+            else:
+                self.speedx = +self.size
+                self.speedy = 0
+        elif abs(dex) <= self.size:
+            if dex > 0:
+                self.speedx = -self.size
+            else:
+                self.speedx = +self.size
+        elif abs(dex) >= self.size:
+            if dex > 0:
+                self.speedx = -self.size
+            else:
+                self.speedx = +self.size
+        dey = self.rect.centery - goal.rect.centery
+        if abs(dey) < self.size / 2:
+            if dey > 0:
+                self.speedx = 0
+                self.speedy = -self.size
+            else:
+                self.speedx = 0
+                self.speedy = +self.size
+        elif abs(dey) <= self.size:
+            if dey > 0:
+                self.speedy = -self.size
+            else:
+                self.speedy = +self.size
+        elif abs(dey) >= self.size:
+            if dey > 0:
+                self.speedy = -self.size
+            else:
+                self.speedy = +self.size
 
     def update(self):
         self.energy -= 1
@@ -61,35 +95,29 @@ class Cell(GObject):
         if not self.goal:
             for food in GObject.food:
                 if self.sight.rect.colliderect(food.rect):
-                    print('foooood')
                     self.goal = food if self.goal is None else self.goal
-                    print((self.rect.x, self.rect.y), (self.goal.rect.x, self.goal.rect.y))
-                    print((self.rect.x - self.goal.rect.x, self.rect.y - self.goal.rect.y))
+        elif not self.sight.rect.colliderect(self.goal.rect):
+            self.goal = None
         else:
-            print((self.rect.x, self.rect.y), (self.goal.rect.x, self.goal.rect.y))
-            print((self.rect.x - self.goal.rect.x, self.rect.y - self.goal.rect.y))
-            if self.rect.colliderect(self.goal.rect):
-                self.eat(self.goal, 100)
-            if -(self.size / 2) <= self.rect.x - self.goal.rect.x <= self.size / 2:
-                self.speedx = 0 if self.speedy else self.speedx
-            elif self.rect.x - self.goal.rect.x <= -(self.size / 2):
-                self.speedx = self.size
-                self.speedx = +self.speedx
-            elif self.rect.x - self.goal.rect.x >= self.size / 2:
-                self.speedx = self.size
-                self.speedx = -self.speedx
-            if -(self.size / 2) <= self.rect.y - self.goal.rect.y <= self.size / 2:
-                self.speedy = 0 if self.speedx else self.speedy
-            elif self.rect.y - self.goal.rect.y <= -(self.size / 2):
-                self.speedy = self.size
-                self.speedy = +self.speedy
-            elif self.rect.y - self.goal.rect.y >= self.size / 2:
-                self.speedy = self.size
-                self.speedy = -self.speedy
-        self.speedx = -self.speedx if Constants.WIDTH.value <= self.rect.x or self.rect.x <= 0 else self.speedx
-        self.speedy = -self.speedy if Constants.HEIGHT.value <= self.rect.y or self.rect.y <= 0 else self.speedy
-        self.rect.x += self.speedx
-        self.rect.y += self.speedy
+            try:
+                if self.rect.colliderect(self.goal.rect):
+                    self.eat(self.goal, 100)
+                self.next_step(self.goal)
+            except AttributeError:
+                pass
+
+        if self.rect.centerx >= Constants.WIDTH.value:
+            self.rect.centerx = self.size
+        elif self.rect.centerx <= 0:
+            self.rect.centerx = Constants.WIDTH.value
+
+        if self.rect.centery >= Constants.HEIGHT.value:
+            self.rect.centery = self.size
+        elif self.rect.centery <= 0:
+            self.rect.centery = Constants.HEIGHT.value
+
+        self.rect.centerx += self.speedx
+        self.rect.centery += self.speedy
         self.text.update(str(self.energy // 10), (self.rect.x + 10, self.rect.y - 20))
         self.sight.update(self.rect.x - ((self.sight.size / 2) - (self.size / 2)),
                           self.rect.y - ((self.sight.size / 2) - (self.size / 2)))
@@ -98,9 +126,9 @@ class Cell(GObject):
 class Sight(GObject):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        self.size = 150
+        self.size = 200
         self.image = pygame.Surface((self.size, self.size))
-        self.image.set_alpha(128)
+        self.image.set_alpha(0)
         self.image.fill(Constants.YELLOW.value)
         self.rect = self.image.get_rect()
         self.rect.centerx = x
