@@ -60,7 +60,6 @@ class Cell(GObject):
             else:
                 self.speedx = +self.size
                 self.speedy = 0
-            return
         elif abs(dex) <= self.size:
             if dex > 0:
                 self.speedx = -self.size
@@ -79,7 +78,6 @@ class Cell(GObject):
             else:
                 self.speedx = 0
                 self.speedy = +self.size
-            return
         elif abs(dey) <= self.size:
             if dey > 0:
                 self.speedy = -self.size
