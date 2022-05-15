@@ -9,7 +9,7 @@ class Cell(GObject):
     def __init__(self, x=Constants.WIDTH.value // 2, y=Constants.HEIGHT.value // 2):
         pygame.sprite.Sprite.__init__(self)
         self.energy = 500
-        self.size = 20
+        self.size = 15
         self.image = pygame.Surface((self.size, self.size))
         self.image.fill(Constants.RED.value)
         self.rect = self.image.get_rect()
@@ -107,8 +107,10 @@ class Cell(GObject):
                 self.next_step(self.goal)
             except AttributeError:
                 pass
-        self.speedx = -self.speedx if Constants.WIDTH.value <= self.rect.x or self.rect.x <= 0 else self.speedx
-        self.speedy = -self.speedy if Constants.HEIGHT.value <= self.rect.y or self.rect.y <= 0 else self.speedy
+        self.speedx = -self.speedx if Constants.WIDTH.value <= self.rect.centerx \
+                                      or self.rect.centerx <= 0 else self.speedx
+        self.speedy = -self.speedx if Constants.HEIGHT.value <= self.rect.centery \
+                                      or self.rect.centery <= 0 else self.speedy
         self.rect.centerx += self.speedx
         self.rect.centery += self.speedy
         self.text.update(str(self.energy // 10), (self.rect.x + 10, self.rect.y - 20))
