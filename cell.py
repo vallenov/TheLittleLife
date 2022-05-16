@@ -1,5 +1,6 @@
 import pygame
 import random
+import datetime
 from TLLclasses import GObject, Constants
 from text import Text
 
@@ -23,6 +24,10 @@ class Cell(GObject):
         self.speedx = random.choice([-1, 1]) * self.size
         self.speedy = random.choice([-1, 1]) * self.size
 
+    def __repr__(self):
+        dt = str(datetime.datetime.now()).split()[1]
+        return f'{dt}'
+
     def born(self):
         new_life = Cell(x=self.rect.x, y=self.rect.y)
         GObject.cnt_of_cells_ever += 1
@@ -42,7 +47,6 @@ class Cell(GObject):
             GObject.all_objects.remove(food)
             self.energy += energy
             self.goal = None
-        print(f'Current food: {len(GObject.food)}')
 
     def check_energy(self):
         if self.energy <= 0:
