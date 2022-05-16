@@ -17,6 +17,9 @@ class Game:
 
     FPS = 10
 
+    work_time = 0
+    food_respawn = 120
+
     @staticmethod
     def walls_generate():
         for _ in range(random.randint(20, 100)):
@@ -44,9 +47,11 @@ class Game:
         # for _ in range(500):
         #     self.new_food()
         while running:
+            self.clock.tick(self.FPS)
+            if not Game.work_time % Game.food_respawn:
+                self.new_food()
             GObject.screen.fill(Constants.GREEN.value)
             GObject.all_objects.update()
-            self.clock.tick(self.FPS)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -68,13 +73,15 @@ class Game:
                     if cell.rect.colliderect(f.rect):
                         cell.eat(f, 100)
 
-            if len(GObject.food.sprites()) < 500:
-                self.new_food()
+            # if len(GObject.food.sprites()) < 500:
+            #     self.new_food()
 
             # Рендеринг
             GObject.all_objects.draw(GObject.screen)
 
             pygame.display.flip()
+
+            Game.work_time += Game.FPS
 
         pygame.quit()
 
