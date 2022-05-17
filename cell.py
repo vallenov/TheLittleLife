@@ -1,7 +1,7 @@
 import pygame
 import random
 import datetime
-from TLLclasses import GObject, Constants
+from GObject import GObject, Constants
 from text import Text
 
 

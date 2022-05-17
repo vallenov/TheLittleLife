@@ -1,6 +1,6 @@
 import pygame
 import random
-from TLLclasses import GObject, Constants
+from GObject import GObject, Constants
 
 
 class Wall(GObject):

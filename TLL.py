@@ -1,6 +1,6 @@
 import pygame
 import random
-from TLLclasses import GObject, Constants
+from GObject import GObject, Constants
 from wall import Wall
 from cell import Cell
 from food import Food
