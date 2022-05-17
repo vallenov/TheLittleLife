@@ -1,6 +1,6 @@
 import pygame
 import random
-from TLLclasses import GObject, Constants
+from GObject import GObject, Constants
 from wall import Wall
 from cell import Cell
 from food import Food
@@ -50,8 +50,6 @@ class Game:
             self.clock.tick(self.FPS)
             if not Game.work_time % Game.food_respawn:
                 self.new_food()
-            GObject.screen.fill(Constants.GREEN.value)
-            GObject.all_objects.update()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -76,9 +74,11 @@ class Game:
             # if len(GObject.food.sprites()) < 500:
             #     self.new_food()
 
-            # Рендеринг
-            GObject.all_objects.draw(GObject.screen)
+            GObject.screen.fill(Constants.GREEN.value)
+            GObject.all_objects.update()
 
+            # Рендеринг
+            GObject.food.draw(GObject.screen)
             pygame.display.flip()
 
             Game.work_time += Game.FPS

@@ -1,7 +1,7 @@
 import pygame
 import random
 import datetime
-from TLLclasses import GObject, Constants
+from GObject import GObject, Constants
 from text import Text
 
 
@@ -122,7 +122,9 @@ class Cell(GObject):
 
         self.rect.centerx += self.speedx
         self.rect.centery += self.speedy
-        self.text.update(str(self.energy // 10), (self.rect.x + 10, self.rect.y - 20))
+
+        GObject.screen.blit(self.image, (self.rect.x, self.rect.y))
+        self.text.update(str(self.energy / 10), (self.rect.x, self.rect.y))
         self.sight.update(self.rect.x - ((self.sight.size / 2) - (self.size / 2)),
                           self.rect.y - ((self.sight.size / 2) - (self.size / 2)))
 
