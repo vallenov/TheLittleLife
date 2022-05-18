@@ -1,6 +1,5 @@
 import pygame
 import enum
-import random
 
 
 class Constants(enum.Enum):
@@ -22,7 +21,6 @@ class GObject(pygame.sprite.Sprite):
     walls = pygame.sprite.Group()
 
     cnt_of_cells_ever = 0
-    screen = pygame.display.set_mode((Constants.WIDTH.value, Constants.HEIGHT.value))
 
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)

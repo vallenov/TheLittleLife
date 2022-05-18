@@ -15,6 +15,8 @@ class Game:
 
     font_name = pygame.font.match_font('arial')
 
+    screen = pygame.display.set_mode((Constants.WIDTH.value, Constants.HEIGHT.value))
+
     FPS = 10
 
     work_time = 0
@@ -74,11 +76,11 @@ class Game:
             # if len(GObject.food.sprites()) < 500:
             #     self.new_food()
 
-            GObject.screen.fill(Constants.GREEN.value)
+            Game.screen.fill(Constants.GREEN.value)
             GObject.all_objects.update()
 
             # Рендеринг
-            GObject.food.draw(GObject.screen)
+            GObject.food.draw(Game.screen)
             pygame.display.flip()
 
             Game.work_time += Game.FPS
