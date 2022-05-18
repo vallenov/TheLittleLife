@@ -4,6 +4,7 @@ from GObject import GObject, Constants
 from wall import Wall
 from cell import Cell
 from food import Food
+from monitor_panel import MonitorPanel
 
 
 class Game:
@@ -21,6 +22,9 @@ class Game:
 
     work_time = 0
     food_respawn = 120
+
+    def __int__(self):
+        self.monitor_panel = MonitorPanel()
 
     @staticmethod
     def walls_generate():
@@ -68,10 +72,6 @@ class Game:
                             self.FPS -= 1
                         elif self.FPS <= 0:
                             self.FPS = 1
-            for cell in GObject.cells:
-                for ind, f in enumerate(GObject.food):
-                    if cell.rect.colliderect(f.rect):
-                        cell.eat(f, 100)
 
             # if len(GObject.food.sprites()) < 500:
             #     self.new_food()
@@ -81,6 +81,7 @@ class Game:
 
             # Рендеринг
             GObject.food.draw(Game.screen)
+            GObject.monitor_panel.draw(Game.screen)
             pygame.display.flip()
 
             Game.work_time += Game.FPS
