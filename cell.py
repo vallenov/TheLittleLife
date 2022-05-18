@@ -123,7 +123,7 @@ class Cell(GObject):
         self.rect.centerx += self.speedx
         self.rect.centery += self.speedy
 
-        GObject.screen.blit(self.image, (self.rect.x, self.rect.y))
+        pygame.display.get_surface().blit(self.image, (self.rect.x, self.rect.y))
         self.text.update(str(self.energy / 10), (self.rect.x, self.rect.y))
         self.sight.update(self.rect.x - ((self.sight.size / 2) - (self.size / 2)),
                           self.rect.y - ((self.sight.size / 2) - (self.size / 2)))
@@ -143,4 +143,4 @@ class Sight(GObject):
     def update(self, x, y):
         self.rect.x = x
         self.rect.y = y
-        GObject.screen.blit(self.image, (x, y))
+        pygame.display.get_surface().blit(self.image, (x, y))

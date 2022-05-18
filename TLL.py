@@ -4,6 +4,7 @@ from GObject import GObject, Constants
 from wall import Wall
 from cell import Cell
 from food import Food
+from control_panel import ControlPanel
 
 
 class Game:
@@ -15,10 +16,15 @@ class Game:
 
     font_name = pygame.font.match_font('arial')
 
+    screen = pygame.display.set_mode((Constants.WIDTH.value, Constants.HEIGHT.value))
+
     FPS = 10
 
     work_time = 0
     food_respawn = 120
+
+    # def __init__(self):
+    #     self.control_panel = ControlPanel()
 
     @staticmethod
     def walls_generate():
@@ -40,6 +46,7 @@ class Game:
         GObject.food.add(f)
 
     def run(self):
+        control_panel = ControlPanel()
         # walls_generate()
         running = True
         for _ in range(1):
@@ -66,19 +73,16 @@ class Game:
                             self.FPS -= 1
                         elif self.FPS <= 0:
                             self.FPS = 1
-            for cell in GObject.cells:
-                for ind, f in enumerate(GObject.food):
-                    if cell.rect.colliderect(f.rect):
-                        cell.eat(f, 100)
 
             # if len(GObject.food.sprites()) < 500:
             #     self.new_food()
 
-            GObject.screen.fill(Constants.GREEN.value)
+            Game.screen.fill(Constants.GREEN.value)
             GObject.all_objects.update()
 
             # Рендеринг
-            GObject.food.draw(GObject.screen)
+            GObject.food.draw(Game.screen)
+            GObject.control_panel.draw(Game.screen)
             pygame.display.flip()
 
             Game.work_time += Game.FPS
