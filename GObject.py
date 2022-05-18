@@ -19,6 +19,7 @@ class GObject(pygame.sprite.Sprite):
     cells = pygame.sprite.Group()
     food = pygame.sprite.Group()
     walls = pygame.sprite.Group()
+    control_panel = pygame.sprite.Group()
 
     cnt_of_cells_ever = 0
 
