@@ -4,7 +4,7 @@ from GObject import GObject, Constants
 from wall import Wall
 from cell import Cell
 from food import Food
-from monitor_panel import MonitorPanel
+from control_panel import ControlPanel
 
 
 class Game:
@@ -23,8 +23,8 @@ class Game:
     work_time = 0
     food_respawn = 120
 
-    def __int__(self):
-        self.monitor_panel = MonitorPanel()
+    # def __init__(self):
+    #     self.control_panel = ControlPanel()
 
     @staticmethod
     def walls_generate():
@@ -46,6 +46,7 @@ class Game:
         GObject.food.add(f)
 
     def run(self):
+        control_panel = ControlPanel()
         # walls_generate()
         running = True
         for _ in range(1):
@@ -81,7 +82,7 @@ class Game:
 
             # Рендеринг
             GObject.food.draw(Game.screen)
-            GObject.monitor_panel.draw(Game.screen)
+            GObject.control_panel.draw(Game.screen)
             pygame.display.flip()
 
             Game.work_time += Game.FPS
