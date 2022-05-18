@@ -14,4 +14,4 @@ class Text(GObject):
     def update(self, text, xy: tuple):
         self.text_surface = self.font.render(text, True, Constants.WHITE.value)
         self.text_rect.midtop = xy
-        GObject.screen.blit(self.text_surface, self.text_rect)
+        pygame.display.get_surface().blit(self.text_surface, self.text_rect)
