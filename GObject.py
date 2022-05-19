@@ -22,6 +22,9 @@ class GObject(pygame.sprite.Sprite):
     control_panel = pygame.sprite.Group()
 
     cnt_of_cells_ever = 0
+    cnt_of_food_ever = 0
+    fps = 0
+    duration = 0
 
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
