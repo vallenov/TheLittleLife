@@ -33,8 +33,6 @@ class Cell(GObject):
         GObject.cnt_of_cells_ever += 1
         GObject.cells.add(new_life)
         GObject.all_objects.add(new_life)
-        print(f'Current population: {len(GObject.cells)}')
-        print(f'Total born: {GObject.cnt_of_cells_ever}')
 
     def die(self):
         GObject.all_objects.remove(self)
@@ -124,7 +122,7 @@ class Cell(GObject):
         self.rect.centery += self.speedy
 
         pygame.display.get_surface().blit(self.image, (self.rect.x, self.rect.y))
-        self.text.update(str(self.energy / 10), (self.rect.x, self.rect.y))
+        self.text.update(str(self.energy / 10), (self.rect.x, self.rect.y), Constants.WHITE.value)
         self.sight.update(self.rect.x - ((self.sight.size / 2) - (self.size / 2)),
                           self.rect.y - ((self.sight.size / 2) - (self.size / 2)))
 
