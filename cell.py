@@ -17,7 +17,7 @@ class Cell(GObject):
         self.rect.centerx = x
         self.rect.bottom = y
 
-        self.text = Text(str(self.energy), 20, (self.rect.x, self.rect.y))
+        self.text = Text(20)
         self.sight = Sight(self.rect.x, self.rect.y)
         self.goal = None
 
