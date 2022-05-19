@@ -23,27 +23,25 @@ class Game:
     work_time = 0
     food_respawn = 120
 
-    # def __init__(self):
-    #     self.control_panel = ControlPanel()
-
     @staticmethod
     def walls_generate():
         for _ in range(random.randint(20, 100)):
             w = Wall()
-            GObject.all_objects.add(w)
+            # GObject.all_objects.add(w)
             GObject.walls.add(w)
 
     @staticmethod
     def spawn():
         new_life = Cell()
         GObject.cells.add(new_life)
-        GObject.all_objects.add(new_life)
+        # GObject.all_objects.add(new_life)
 
     @staticmethod
     def new_food():
         f = Food()
-        GObject.all_objects.add(f)
+        # GObject.all_objects.add(f)
         GObject.food.add(f)
+        GObject.cnt_of_food_ever += 1
 
     def run(self):
         control_panel = ControlPanel()
@@ -55,7 +53,7 @@ class Game:
         #     self.new_food()
         while running:
             self.clock.tick(self.FPS)
-            if not Game.work_time % Game.food_respawn:
+            if not (Game.work_time % Game.food_respawn):
                 self.new_food()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -76,16 +74,20 @@ class Game:
 
             # if len(GObject.food.sprites()) < 500:
             #     self.new_food()
-
             Game.screen.fill(Constants.GREEN.value)
-            GObject.all_objects.update()
+
+            GObject.food.draw(Game.screen)
+
+            GObject.cells.update()
+            GObject.control_panel.update()
+            # GObject.all_objects.update()
 
             # Рендеринг
-            GObject.food.draw(Game.screen)
-            GObject.control_panel.draw(Game.screen)
             pygame.display.flip()
 
             Game.work_time += Game.FPS
+            GObject.fps = self.FPS
+            GObject.duration = Game.work_time // Game.FPS
 
         pygame.quit()
 
