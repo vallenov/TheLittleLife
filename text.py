@@ -8,8 +8,8 @@ class Text(GObject):
         pygame.sprite.Sprite.__init__(self)
         self.font = pygame.font.SysFont(pygame.font.match_font('arial'), size)
 
-    def update(self, text, xy: tuple):
-        text_surface = self.font.render(text, True, Constants.WHITE.value)
+    def update(self, text, xy: tuple, color: tuple):
+        text_surface = self.font.render(str(text), True, color)
         text_rect = text_surface.get_rect()
         text_rect.midtop = xy
         pygame.display.get_surface().blit(text_surface, text_rect)
