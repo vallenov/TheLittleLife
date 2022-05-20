@@ -1,6 +1,7 @@
 import pygame
 from GObject import GObject, Constants
 from text import Text
+from graph import Graph
 
 
 class ControlPanel(GObject):
@@ -16,6 +17,8 @@ class ControlPanel(GObject):
         # GObject.all_objects.add(self)
         GObject.control_panel.add(self)
 
+        self.population_graph = Graph(y=GObject.current_population_list, x=GObject.duration_list, size=(280, 100))
+        self.population_graph.rect.center = (Constants.WIDTH.value - 150, 60)
         self.fps = Text(30)
         self.current_food = Text(30)
         self.total_food = Text(30)
@@ -42,3 +45,6 @@ class ControlPanel(GObject):
         self.total_born.update(f'Total born: {GObject.cnt_of_cells_ever}',
                                (Constants.WIDTH.value - 150, Constants.HEIGHT.value - 30),
                                Constants.BLACK.value)
+        # pygame.display.get_surface().blit(self.population_graph.image, self.population_graph.rect.center)
+        self.population_graph.update()
+

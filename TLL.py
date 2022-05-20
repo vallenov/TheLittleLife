@@ -53,6 +53,9 @@ class Game:
         #     self.new_food()
         while running:
             self.clock.tick(self.FPS)
+            if not (Game.work_time % 60):
+                GObject.duration_list.append(Game.work_time)
+                GObject.current_population_list.append(len(GObject.cells))
             if not (Game.work_time % Game.food_respawn):
                 self.new_food()
             for event in pygame.event.get():
@@ -73,7 +76,8 @@ class Game:
                             self.FPS = 1
 
             # if len(GObject.food.sprites()) < 500:
-            #     self.new_food()
+            #     while len(GObject.food.sprites()) < 500:
+            #         self.new_food()
             Game.screen.fill(Constants.GREEN.value)
 
             GObject.food.draw(Game.screen)
