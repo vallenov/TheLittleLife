@@ -73,7 +73,8 @@ class Game:
                             self.FPS = 1
 
             # if len(GObject.food.sprites()) < 500:
-            #     self.new_food()
+            #     while len(GObject.food.sprites()) < 500:
+            #         self.new_food()
             Game.screen.fill(Constants.GREEN.value)
 
             GObject.food.draw(Game.screen)
