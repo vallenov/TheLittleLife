@@ -25,6 +25,8 @@ class GObject(pygame.sprite.Sprite):
     cnt_of_food_ever = 0
     fps = 0
     duration = 0
+    current_population_list = []
+    duration_list = []
 
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
