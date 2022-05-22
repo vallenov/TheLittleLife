@@ -16,28 +16,38 @@ class Graph(GObject):
         self.image = pygame.Surface(size, 5)
         self.image.fill(Constants.BLACK.value)
         self.rect = self.image.get_rect()
-        self.center = tuple()
-        # self.zero = Text(20)
         self.y_top_text = Text(20)
+        self.x_bottom_text = Text(20)
+        self.xlabel = Text(20)
+        self.ylabel = Text(20)
 
     @staticmethod
     def compress(lst):
-        step = 10
+        print(lst)
+        step = 2
+        finaly_len = len(lst) // step
         i = 0
-        while len(lst) > step:
-            step = step if step <= len(lst[i:]) else len(lst[i:]-1)
-            lst[i] = math.ceil(sum(lst[i:step+i]) / len(lst[i:step+i]))
+        while len(lst) > finaly_len:
+            step = step if step <= len(lst[i:]) else len(lst[i:])
+            lst[i] = math.ceil(sum(lst[i:step+i]) / len(lst[i:step+i])) if max(lst) not in lst[i:step+i] else max(lst)
             for _ in range(step-1):
                 lst.pop(i+1)
             i += 1
         return lst
 
     def update(self):
-        if len(self.x_list) >= 100:
+        if len(self.x_list) >= 30:
             self.x_list = self.compress(self.x_list)
             self.y_list = self.compress(self.y_list)
         pygame.draw.rect(pygame.display.get_surface(), Constants.BLACK.value, self, 1)
-        self.y_top_text.update(str(max(self.y_list)), (self.rect.left - 5, self.rect.top - 10), Constants.BLACK.value)
+        self.y_top_text.update(text=str(max(self.y_list)),
+                               xy=(self.rect.left, self.rect.top - 15),
+                               color=Constants.BLACK.value)
+        self.x_bottom_text.update(text=str(self.x_list[-1]),
+                               xy=(self.rect.right, self.rect.bottom + 5),
+                               color=Constants.BLACK.value)
+        self.ylabel.update((self.rect.centerx, self.rect.top - 15), Constants.BLACK.value)
+        self.xlabel.update((self.rect.centerx, self.rect.bottom + 5), Constants.BLACK.value)
         startxy = (self.rect.left, self.rect.bottom)
         percent = max(self.y_list)
         self.scale = len(self.x_list)
@@ -47,6 +57,6 @@ class Graph(GObject):
                              self.color,
                              startxy,
                              (self.rect.left + int((part+1)*self.part_size),
-                              self.rect.bottom - (self.y_list[part] / percent) * self.size[1]), 3)
+                              self.rect.bottom - (self.y_list[part] / percent) * self.size[1]), 2)
             startxy = (self.rect.left + int((part+1)*self.part_size),
                        self.rect.bottom - int((self.y_list[part] / percent) * self.size[1]))
