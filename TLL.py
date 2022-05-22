@@ -18,10 +18,10 @@ class Game:
 
     screen = pygame.display.set_mode((Constants.WIDTH.value, Constants.HEIGHT.value))
 
-    FPS = 10
+    FPS = 1
 
     work_time = 0
-    food_respawn = 120
+    food_respawn = 20
 
     @staticmethod
     def walls_generate():

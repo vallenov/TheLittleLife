@@ -19,6 +19,7 @@ class ControlPanel(GObject):
 
         self.population_graph = Graph(y=GObject.current_population_list, x=GObject.duration_list, size=(280, 100))
         self.population_graph.rect.center = (Constants.WIDTH.value - 150, 60)
+        self.population_graph.color = Constants.BLUE.value
         self.fps = Text(30)
         self.current_food = Text(30)
         self.total_food = Text(30)
