@@ -33,22 +33,16 @@ class Graph(GObject):
         return lst
 
     def update(self):
-        if len(self.x_list) >= 30:
+        if len(self.x_list) >= 100:
             self.x_list = self.compress(self.x_list)
             self.y_list = self.compress(self.y_list)
-            self.scale = 20
         pygame.draw.rect(pygame.display.get_surface(), Constants.BLACK.value, self, 1)
-        # self.zero.update(self.x_list[0], (self.rect.left, self.rect.bottom), Constants.BLACK.value)
         self.y_top_text.update(str(max(self.y_list)), (self.rect.left - 5, self.rect.top - 10), Constants.BLACK.value)
         startxy = (self.rect.left, self.rect.bottom)
         percent = max(self.y_list)
-        if len(self.x_list) < self.scale:
-            rng = len(self.x_list)
-        else:
-            self.scale = len(self.x_list)
-            self.part_size = self.size[0] / self.scale
-            rng = self.scale
-        for part in range(rng):
+        self.scale = len(self.x_list)
+        self.part_size = self.size[0] / self.scale
+        for part in range(self.scale):
             pygame.draw.line(pygame.display.get_surface(),
                              self.color,
                              startxy,
