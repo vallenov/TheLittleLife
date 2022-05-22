@@ -122,7 +122,7 @@ class Cell(GObject):
         self.rect.centery += self.speedy
 
         pygame.display.get_surface().blit(self.image, (self.rect.x, self.rect.y))
-        self.text.update(str(self.energy / 10), (self.rect.x + 5, self.rect.y - 20), Constants.WHITE.value)
+        self.text.update(text=str(self.energy / 10), xy=(self.rect.x + 5, self.rect.y - 20), color=Constants.WHITE.value)
         self.sight.update(self.rect.x - ((self.sight.size / 2) - (self.size / 2)),
                           self.rect.y - ((self.sight.size / 2) - (self.size / 2)))
 
