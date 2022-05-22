@@ -18,12 +18,22 @@ class ControlPanel(GObject):
         GObject.control_panel.add(self)
 
         self.population_graph = Graph(y=GObject.current_population_list,
-                                      x=GObject.duration_list,
+                                      x=GObject.duration_cell_list,
                                       size=(250, 250))
         self.population_graph.rect.centerx, self.population_graph.rect.top = (Constants.WIDTH.value - 150, 20)
-        self.population_graph.color = Constants.BLUE.value
+        self.population_graph.color = Constants.RED.value
         self.population_graph.xlabel.text = 'Frames'
         self.population_graph.ylabel.text = 'Count of cells'
+
+        self.current_food_graph = Graph(y=GObject.current_food_list,
+                                        x=GObject.duration_food_list,
+                                        size=(250, 250))
+        self.current_food_graph.rect.centerx = Constants.WIDTH.value - 150
+        self.current_food_graph.rect.top = self.population_graph.rect.bottom + 40
+        self.current_food_graph.color = Constants.BLUE.value
+        self.current_food_graph.xlabel.text = 'Frames'
+        self.current_food_graph.ylabel.text = 'Count of food'
+
         self.fps = Text(30)
         self.current_food = Text(30)
         self.total_food = Text(30)
@@ -51,4 +61,4 @@ class ControlPanel(GObject):
                                xy=(Constants.WIDTH.value - 150, Constants.HEIGHT.value - 30),
                                color=Constants.BLACK.value)
         self.population_graph.update()
-
+        self.current_food_graph.update()
