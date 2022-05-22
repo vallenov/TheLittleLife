@@ -130,7 +130,7 @@ class Cell(GObject):
 class Sight(GObject):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        self.size = 200
+        self.size = 300
         self.image = pygame.Surface((self.size, self.size))
         self.image.set_alpha(0)
         self.image.fill(Constants.YELLOW.value)
