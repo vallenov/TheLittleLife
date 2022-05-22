@@ -1,4 +1,5 @@
 import pygame
+import math
 from GObject import GObject, Constants
 from text import Text
 
@@ -16,12 +17,28 @@ class Graph(GObject):
         self.image.fill(Constants.BLACK.value)
         self.rect = self.image.get_rect()
         self.center = tuple()
-        self.zero = Text(20)
+        # self.zero = Text(20)
         self.y_top_text = Text(20)
 
+    @staticmethod
+    def compress(lst):
+        step = 10
+        i = 0
+        while len(lst) > step:
+            step = step if step <= len(lst[i:]) else len(lst[i:]-1)
+            lst[i] = math.ceil(sum(lst[i:step+i]) / len(lst[i:step+i]))
+            for _ in range(step-1):
+                lst.pop(i+1)
+            i += 1
+        return lst
+
     def update(self):
+        if len(self.x_list) >= 30:
+            self.x_list = self.compress(self.x_list)
+            self.y_list = self.compress(self.y_list)
+            self.scale = 20
         pygame.draw.rect(pygame.display.get_surface(), Constants.BLACK.value, self, 1)
-        self.zero.update(self.x_list[0], (self.rect.left, self.rect.bottom), Constants.BLACK.value)
+        # self.zero.update(self.x_list[0], (self.rect.left, self.rect.bottom), Constants.BLACK.value)
         self.y_top_text.update(str(max(self.y_list)), (self.rect.left - 5, self.rect.top - 10), Constants.BLACK.value)
         startxy = (self.rect.left, self.rect.bottom)
         percent = max(self.y_list)
