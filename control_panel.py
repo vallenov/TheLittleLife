@@ -17,9 +17,23 @@ class ControlPanel(GObject):
         # GObject.all_objects.add(self)
         GObject.control_panel.add(self)
 
-        self.population_graph = Graph(y=GObject.current_population_list, x=GObject.duration_list, size=(280, 100))
-        self.population_graph.rect.center = (Constants.WIDTH.value - 150, 60)
-        self.population_graph.color = Constants.BLUE.value
+        self.population_graph = Graph(y=GObject.current_population_list,
+                                      x=GObject.duration_cell_list,
+                                      size=(250, 250))
+        self.population_graph.rect.centerx, self.population_graph.rect.top = (Constants.WIDTH.value - 150, 20)
+        self.population_graph.color = Constants.RED.value
+        self.population_graph.xlabel.text = 'Frames'
+        self.population_graph.ylabel.text = 'Count of cells'
+
+        self.current_food_graph = Graph(y=GObject.current_food_list,
+                                        x=GObject.duration_food_list,
+                                        size=(250, 250))
+        self.current_food_graph.rect.centerx = Constants.WIDTH.value - 150
+        self.current_food_graph.rect.top = self.population_graph.rect.bottom + 40
+        self.current_food_graph.color = Constants.BLUE.value
+        self.current_food_graph.xlabel.text = 'Frames'
+        self.current_food_graph.ylabel.text = 'Count of food'
+
         self.fps = Text(30)
         self.current_food = Text(30)
         self.total_food = Text(30)
@@ -28,24 +42,23 @@ class ControlPanel(GObject):
 
     def update(self):
         pygame.display.get_surface().blit(self.image, (self.rect.x, self.rect.y))
-        self.fps.update(f'Duration: {GObject.duration // 60}m or {GObject.duration // 3600}h',
-                        (Constants.WIDTH.value - 150, Constants.HEIGHT.value - 180),
-                        Constants.BLACK.value)
-        self.fps.update(f'FPS: {GObject.fps}',
-                        (Constants.WIDTH.value - 150, Constants.HEIGHT.value - 150),
-                        Constants.BLACK.value)
-        self.current_food.update(f'Current food: {len(GObject.food)}',
-                                 (Constants.WIDTH.value - 150, Constants.HEIGHT.value - 120),
-                                 Constants.BLACK.value)
-        self.total_food.update(f'Total food: {GObject.cnt_of_food_ever}',
-                               (Constants.WIDTH.value - 150, Constants.HEIGHT.value - 90),
-                               Constants.BLACK.value)
-        self.current_population.update(f'Current population: {len(GObject.cells)}',
-                                       (Constants.WIDTH.value - 150, Constants.HEIGHT.value - 60),
-                                       Constants.BLACK.value)
-        self.total_born.update(f'Total born: {GObject.cnt_of_cells_ever}',
-                               (Constants.WIDTH.value - 150, Constants.HEIGHT.value - 30),
-                               Constants.BLACK.value)
-        # pygame.display.get_surface().blit(self.population_graph.image, self.population_graph.rect.center)
+        self.fps.update(text=f'Duration: {GObject.duration // 60}m or {GObject.duration // 3600}h',
+                        xy=(Constants.WIDTH.value - 150, Constants.HEIGHT.value - 180),
+                        color=Constants.BLACK.value)
+        self.fps.update(text=f'FPS: {GObject.fps}',
+                        xy=(Constants.WIDTH.value - 150, Constants.HEIGHT.value - 150),
+                        color=Constants.BLACK.value)
+        self.current_food.update(text=f'Current food: {len(GObject.food)}',
+                                 xy=(Constants.WIDTH.value - 150, Constants.HEIGHT.value - 120),
+                                 color=Constants.BLACK.value)
+        self.total_food.update(text=f'Total food: {GObject.cnt_of_food_ever}',
+                               xy=(Constants.WIDTH.value - 150, Constants.HEIGHT.value - 90),
+                               color=Constants.BLACK.value)
+        self.current_population.update(text=f'Current population: {len(GObject.cells)}',
+                                       xy=(Constants.WIDTH.value - 150, Constants.HEIGHT.value - 60),
+                                       color=Constants.BLACK.value)
+        self.total_born.update(text=f'Total born: {GObject.cnt_of_cells_ever}',
+                               xy=(Constants.WIDTH.value - 150, Constants.HEIGHT.value - 30),
+                               color=Constants.BLACK.value)
         self.population_graph.update()
-
+        self.current_food_graph.update()

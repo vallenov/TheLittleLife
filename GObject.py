@@ -26,7 +26,9 @@ class GObject(pygame.sprite.Sprite):
     fps = 0
     duration = 0
     current_population_list = []
-    duration_list = []
+    current_food_list = []
+    duration_cell_list = []
+    duration_food_list = []
 
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
