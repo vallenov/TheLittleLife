@@ -41,7 +41,7 @@ class Game:
         f = Food()
         # GObject.all_objects.add(f)
         GObject.food.add(f)
-        GObject.cnt_of_food_ever += 1
+        GObject.count_of_food_ever += 1
 
     def run(self):
         control_panel = ControlPanel()
@@ -49,10 +49,13 @@ class Game:
         running = True
         for _ in range(1):
             self.spawn()
-        # for _ in range(500):
-        #     self.new_food()
+        for _ in range(500):
+            self.new_food()
         while running:
             self.clock.tick(self.FPS)
+            if not GObject.cells:
+                GObject.count_of_extinction += 1
+                self.spawn()
             if not (Game.work_time % 60):
                 GObject.duration_cell_list.append(Game.work_time)
                 GObject.current_population_list.append(len(GObject.cells))
