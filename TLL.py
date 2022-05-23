@@ -38,14 +38,14 @@ class Game:
 
     @staticmethod
     def new_food():
-        f = Food()
+        f = Food(energy=random.randint(50, 150))
         # GObject.all_objects.add(f)
         GObject.food.add(f)
         GObject.count_of_food_ever += 1
 
     def run(self):
         control_panel = ControlPanel()
-        # walls_generate()
+        # self.walls_generate()
         running = True
         for _ in range(1):
             self.spawn()
@@ -80,8 +80,7 @@ class Game:
                         elif self.FPS <= 0:
                             self.FPS = 1
 
-            # if len(GObject.food.sprites()) < 500:
-            #     while len(GObject.food.sprites()) < 500:
+            # while len(GObject.food.sprites()) < 500:
             #         self.new_food()
             Game.screen.fill(Constants.GREEN.value)
 
