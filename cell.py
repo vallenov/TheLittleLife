@@ -61,10 +61,10 @@ class Cell(GObject):
             self.speedx = self.size if dist.x > 0 else -self.size
             self.speedy = self.size if dist.y > 0 else -self.size
         else:
-            if dist.x < self.size // 2:
+            if dist.x <= self.size // 2:
                 self.speedx = 0
                 self.speedy = self.size if dist.y > self.size // 2 else -self.size
-            elif dist.y < self.size // 2:
+            elif dist.y <= self.size // 2:
                 self.speedy = 0
                 self.speedx = self.size if dist.x > self.size // 2 else -self.size
 
@@ -78,12 +78,10 @@ class Cell(GObject):
         elif not self.sight.rect.colliderect(self.goal.rect):
             self.goal = None
         else:
-            try:
-                if self.rect.colliderect(self.goal.rect):
-                    self.eat(self.goal, 100)
+            if self.rect.colliderect(self.goal.rect):
+                self.eat(self.goal, 100)
+            else:
                 self.next_step(self.goal)
-            except AttributeError:
-                pass
 
         if self.rect.centerx >= Constants.WIDTH.value:
             self.rect.centerx = self.size
