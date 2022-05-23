@@ -34,6 +34,7 @@ class Game:
     def spawn():
         new_life = Cell()
         GObject.cells.add(new_life)
+        GObject.count_of_cells_ever += 1
         # GObject.all_objects.add(new_life)
 
     @staticmethod
@@ -44,13 +45,15 @@ class Game:
         GObject.count_of_food_ever += 1
 
     def run(self):
+        self.FPS = 200
         control_panel = ControlPanel()
         # self.walls_generate()
         running = True
         for _ in range(1):
             self.spawn()
-        for _ in range(500):
+        for _ in range(5):
             self.new_food()
+        self.prev_work_time = 0
         while running:
             self.clock.tick(self.FPS)
             if not GObject.cells:
@@ -61,8 +64,9 @@ class Game:
                 GObject.current_population_list.append(len(GObject.cells))
                 GObject.duration_food_list.append(Game.work_time)
                 GObject.current_food_list.append(len(GObject.food))
-            if not (Game.work_time % Game.food_respawn):
+            if not (self.work_time % self.food_respawn):
                 self.new_food()
+                self.prev_work_time = self.work_time
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -95,7 +99,7 @@ class Game:
 
             Game.work_time += Game.FPS
             GObject.fps = self.FPS
-            GObject.duration = Game.work_time // Game.FPS
+            GObject.duration = self.work_time #// Game.FPS
 
         pygame.quit()
 
