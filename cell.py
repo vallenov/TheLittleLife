@@ -30,7 +30,7 @@ class Cell(GObject):
 
     def born(self):
         new_life = Cell(x=self.rect.x, y=self.rect.y)
-        GObject.cnt_of_cells_ever += 1
+        GObject.count_of_cells_ever += 1
         GObject.cells.add(new_life)
         GObject.all_objects.add(new_life)
 
@@ -54,42 +54,19 @@ class Cell(GObject):
             self.energy -= 700
 
     def next_step(self, goal):
-        dex = self.rect.centerx - goal.rect.centerx
-        if abs(dex) < self.size / 2:
-            if dex > 0:
-                self.speedx = -self.size
-                self.speedy = 0
-            else:
-                self.speedx = +self.size
-                self.speedy = 0
-        elif abs(dex) <= self.size:
-            if dex > 0:
-                self.speedx = -self.size
-            else:
-                self.speedx = +self.size
-        elif abs(dex) >= self.size:
-            if dex > 0:
-                self.speedx = -self.size
-            else:
-                self.speedx = +self.size
-        dey = self.rect.centery - goal.rect.centery
-        if abs(dey) < self.size / 2:
-            if dey > 0:
+        pos = pygame.math.Vector2(self.rect.center)
+        goal_pos = pygame.math.Vector2(goal.rect.center)
+        dist = goal_pos - pos
+        if all(list(map(lambda q: abs(q) > self.size // 2, dist))):
+            self.speedx = self.size if dist.x > 0 else -self.size
+            self.speedy = self.size if dist.y > 0 else -self.size
+        else:
+            if dist.x < self.size // 2:
                 self.speedx = 0
-                self.speedy = -self.size
-            else:
-                self.speedx = 0
-                self.speedy = +self.size
-        elif abs(dey) <= self.size:
-            if dey > 0:
-                self.speedy = -self.size
-            else:
-                self.speedy = +self.size
-        elif abs(dey) >= self.size:
-            if dey > 0:
-                self.speedy = -self.size
-            else:
-                self.speedy = +self.size
+                self.speedy = self.size if dist.y > self.size // 2 else -self.size
+            elif dist.y < self.size // 2:
+                self.speedy = 0
+                self.speedx = self.size if dist.x > self.size // 2 else -self.size
 
     def update(self):
         self.energy -= 1
