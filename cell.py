@@ -15,14 +15,14 @@ class Cell(GObject):
         self.image.fill(Constants.RED.value)
         self.rect = self.image.get_rect()
         self.rect.centerx = x
-        self.rect.bottom = y
+        self.rect.centery = y
 
         self.text = Text(20)
         self.sight = Sight(self.rect.x, self.rect.y)
         self.goal = None
 
-        self.speedx = random.choice([-1, 1]) * self.size
-        self.speedy = random.choice([-1, 1]) * self.size
+        self.speed = pygame.math.Vector2(random.choice([-1, 1]) * self.size)
+        self.position = pygame.math.Vector2(x, y)
 
     def __repr__(self):
         dt = str(datetime.datetime.now()).split()[1]
@@ -39,11 +39,11 @@ class Cell(GObject):
         GObject.cells.remove(self)
         del self
 
-    def eat(self, food, energy):
+    def eat(self, food):
         if self.energy < 1000:
             GObject.food.remove(food)
             GObject.all_objects.remove(food)
-            self.energy += energy
+            self.energy += food.energy
             self.goal = None
 
     def check_energy(self):
@@ -58,15 +58,13 @@ class Cell(GObject):
         goal_pos = pygame.math.Vector2(goal.rect.center)
         dist = goal_pos - pos
         if all(list(map(lambda q: abs(q) > self.size // 2, dist))):
-            self.speedx = self.size if dist.x > 0 else -self.size
-            self.speedy = self.size if dist.y > 0 else -self.size
+            self.speed.update(self.size if dist.x > 0 else -self.size,
+                          self.size if dist.y > 0 else -self.size)
         else:
             if dist.x <= self.size // 2:
-                self.speedx = 0
-                self.speedy = self.size if dist.y > self.size // 2 else -self.size
+                self.speed.update(0, self.size if dist.y > self.size // 2 else -self.size)
             elif dist.y <= self.size // 2:
-                self.speedy = 0
-                self.speedx = self.size if dist.x > self.size // 2 else -self.size
+                self.speed.update(self.size if dist.x > self.size // 2 else -self.size, 0)
 
     def update(self):
         self.energy -= 1
@@ -79,22 +77,22 @@ class Cell(GObject):
             self.goal = None
         else:
             if self.rect.colliderect(self.goal.rect):
-                self.eat(self.goal, 100)
+                self.eat(self.goal)
             else:
                 self.next_step(self.goal)
 
         if self.rect.centerx >= Constants.WIDTH.value:
-            self.rect.centerx = self.size
+            self.position.x = self.size
         elif self.rect.centerx <= 0:
-            self.rect.centerx = Constants.WIDTH.value
+            self.position.x = Constants.WIDTH.value
 
         if self.rect.centery >= Constants.HEIGHT.value:
-            self.rect.centery = self.size
+            self.position.y = self.size
         elif self.rect.centery <= 0:
-            self.rect.centery = Constants.HEIGHT.value
+            self.position.y = Constants.HEIGHT.value
 
-        self.rect.centerx += self.speedx
-        self.rect.centery += self.speedy
+        self.position += self.speed.x, self.speed.y
+        self.rect.center = self.position.x, self.position.y
 
         pygame.display.get_surface().blit(self.image, (self.rect.x, self.rect.y))
         self.text.update(text=str(self.energy / 10), xy=(self.rect.x + 5, self.rect.y - 20), color=Constants.WHITE.value)
