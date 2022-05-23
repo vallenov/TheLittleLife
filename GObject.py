@@ -21,8 +21,10 @@ class GObject(pygame.sprite.Sprite):
     walls = pygame.sprite.Group()
     control_panel = pygame.sprite.Group()
 
-    cnt_of_cells_ever = 0
-    cnt_of_food_ever = 0
+    count_of_extinction = 0
+
+    count_of_cells_ever = 0
+    count_of_food_ever = 0
     fps = 0
     duration = 0
     current_population_list = []
