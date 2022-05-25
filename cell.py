@@ -21,8 +21,12 @@ class Cell(GObject):
         self.sight = Sight(self.rect.x, self.rect.y)
         self.goal = None
 
-        self.speed = pygame.math.Vector2(random.choice([-1, 1]) * self.size)
+        self.speed = self.rand_speed()
+
         self.position = pygame.math.Vector2(x, y)
+
+    def rand_speed(self):
+        return pygame.math.Vector2(random.choice([-1, 0, 1]) * self.size, random.choice([-1, 0, 1]) * self.size)
 
     def __repr__(self):
         dt = str(datetime.datetime.now()).split()[1]
@@ -73,6 +77,9 @@ class Cell(GObject):
             for food in GObject.food:
                 if self.sight.rect.colliderect(food.rect):
                     self.goal = food if self.goal is None else self.goal
+                    break
+            if not self.goal and random.randint(0, 100) < 5:
+                self.speed = self.rand_speed()
         elif not self.sight.rect.colliderect(self.goal.rect):
             self.goal = None
         else:
