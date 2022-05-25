@@ -21,6 +21,7 @@ class Graph(GObject):
         self.y_last_value = Text(20)
         self.xlabel = Text(20)  # name of x axis
         self.ylabel = Text(20)  # name of y axis
+        self.ylabel.angle = 90
         self.compress = True
 
     @staticmethod
@@ -42,17 +43,17 @@ class Graph(GObject):
         return lst
 
     def update(self):
-        if self.compress and len(self.x_list) >= 30:
+        if self.compress and len(self.x_list) >= self.size[0] // 5:
             self.x_list = self._compress(self.x_list)
             self.y_list = self._compress(self.y_list)
         pygame.draw.rect(pygame.display.get_surface(), Constants.BLACK.value, self, 1)
         self.y_top_text.update(text=str(max(self.y_list)),
-                               xy=(self.rect.left, self.rect.top - 15),
+                               xy=(self.rect.left, self.rect.top - self.ylabel.size),
                                color=Constants.BLACK.value)
         self.x_bottom_text.update(text=str(self.x_list[-1]),
-                                  xy=(self.rect.right, self.rect.bottom + 5),
+                                  xy=(self.rect.right, self.rect.bottom + self.ylabel.size // 4),
                                   color=Constants.BLACK.value)
-        self.ylabel.update(xy=(self.rect.centerx, self.rect.top - 15), color=Constants.BLACK.value)
+        self.ylabel.update(xy=(self.rect.left - self.ylabel.size // 2, self.rect.centery - self.ylabel.size * 2), color=Constants.BLACK.value)
         self.xlabel.update(xy=(self.rect.centerx, self.rect.bottom + 5), color=Constants.BLACK.value)
         startxy = (self.rect.left, self.rect.bottom)
         percent = max(self.y_list) if max(self.y_list) > 0 else 1
