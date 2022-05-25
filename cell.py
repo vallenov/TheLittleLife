@@ -10,7 +10,7 @@ class Cell(GObject):
     def __init__(self, x=Constants.WIDTH.value // 2, y=Constants.HEIGHT.value // 2):
         pygame.sprite.Sprite.__init__(self)
         self.energy = 500
-        self.size = 15
+        self.size = 10
         self.image = pygame.Surface((self.size, self.size))
         self.image.fill(Constants.RED.value)
         self.rect = self.image.get_rect()
@@ -21,8 +21,12 @@ class Cell(GObject):
         self.sight = Sight(self.rect.x, self.rect.y)
         self.goal = None
 
-        self.speed = pygame.math.Vector2(random.choice([-1, 1]) * self.size)
+        self.speed = self.rand_speed()
+
         self.position = pygame.math.Vector2(x, y)
+
+    def rand_speed(self):
+        return pygame.math.Vector2(random.choice([-1, 0, 1]) * self.size, random.choice([-1, 0, 1]) * self.size)
 
     def __repr__(self):
         dt = str(datetime.datetime.now()).split()[1]
@@ -57,14 +61,14 @@ class Cell(GObject):
         pos = pygame.math.Vector2(self.rect.center)
         goal_pos = pygame.math.Vector2(goal.rect.center)
         dist = goal_pos - pos
-        if all(list(map(lambda q: abs(q) > self.size // 2, dist))):
-            self.speed.update(self.size if dist.x > 0 else -self.size,
-                          self.size if dist.y > 0 else -self.size)
+        if all(list(map(lambda q: abs(q) > self.size / 2, dist))):
+            self.speed.update(self.size if dist.x >= 0 else -self.size,
+                              self.size if dist.y >= 0 else -self.size)
         else:
-            if dist.x <= self.size // 2:
-                self.speed.update(0, self.size if dist.y > self.size // 2 else -self.size)
-            elif dist.y <= self.size // 2:
-                self.speed.update(self.size if dist.x > self.size // 2 else -self.size, 0)
+            if dist.x <= self.size / 2:
+                self.speed.update(0, self.size if dist.y > self.size / 2 else -self.size)
+            elif dist.y <= self.size / 2:
+                self.speed.update(self.size if dist.x > self.size / 2 else -self.size, 0)
 
     def update(self):
         self.energy -= 1
@@ -73,6 +77,9 @@ class Cell(GObject):
             for food in GObject.food:
                 if self.sight.rect.colliderect(food.rect):
                     self.goal = food if self.goal is None else self.goal
+                    break
+            if not self.goal and random.randint(0, 100) < 5:
+                self.speed = self.rand_speed()
         elif not self.sight.rect.colliderect(self.goal.rect):
             self.goal = None
         else:
@@ -95,7 +102,8 @@ class Cell(GObject):
         self.rect.center = self.position.x, self.position.y
 
         pygame.display.get_surface().blit(self.image, (self.rect.x, self.rect.y))
-        self.text.update(text=str(self.energy / 10), xy=(self.rect.x + 5, self.rect.y - 20), color=Constants.WHITE.value)
+        self.text.update(text=str(self.energy / 10), xy=(self.rect.x + 5, self.rect.y - 20),
+                         color=Constants.WHITE.value)
         self.sight.update(self.rect.x - ((self.sight.size / 2) - (self.size / 2)),
                           self.rect.y - ((self.sight.size / 2) - (self.size / 2)))
 
