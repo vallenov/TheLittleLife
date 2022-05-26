@@ -3,8 +3,8 @@ import random
 import datetime
 from GObject import GObject, Constants
 from text import Text
-from cell.sight import Sight
-from cell.genotype import Genotype
+from TheLittleLife.cell.sight import Sight
+from TheLittleLife.cell.genotype import Genotype
 
 
 class Cell(GObject):
