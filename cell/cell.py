@@ -3,22 +3,27 @@ import random
 import datetime
 from GObject import GObject, Constants
 from text import Text
+from TheLittleLife.cell.sight import Sight
+from TheLittleLife.cell.genotype import Genotype
 
 
 class Cell(GObject):
 
-    def __init__(self, x=Constants.WIDTH.value // 2, y=Constants.HEIGHT.value // 2):
+    def __init__(self, x=Constants.WIDTH.value // 2, y=Constants.HEIGHT.value // 2, genotype=None):
         pygame.sprite.Sprite.__init__(self)
+        self.gen = Genotype() if not genotype else Genotype.transfer_genotype(genotype)
+        self.dna = self.gen.dna
+        print(self.gen)
         self.energy = 500
-        self.size = 10
+        self.size = self.dna['size']
         self.image = pygame.Surface((self.size, self.size))
-        self.image.fill(Constants.RED.value)
+        self.image.fill(self.dna['color'])
         self.rect = self.image.get_rect()
         self.rect.centerx = x
         self.rect.centery = y
 
         self.text = Text(20)
-        self.sight = Sight(self.rect.x, self.rect.y)
+        self.sight = Sight(self.rect.x, self.rect.y, self.dna['sight_distance'])
         self.goal = None
 
         self.speed = self.rand_speed()
@@ -33,7 +38,7 @@ class Cell(GObject):
         return f'{dt}'
 
     def born(self):
-        new_life = Cell(x=self.rect.x, y=self.rect.y)
+        new_life = Cell(x=self.rect.x, y=self.rect.y, genotype=self.gen)
         GObject.count_of_cells_ever += 1
         GObject.cells.add(new_life)
         GObject.all_objects.add(new_life)
@@ -44,7 +49,7 @@ class Cell(GObject):
         del self
 
     def eat(self, food):
-        if self.energy < 1000:
+        if self.energy < self.dna['max_energy']:
             GObject.food.remove(food)
             GObject.all_objects.remove(food)
             self.energy += food.energy
@@ -53,22 +58,24 @@ class Cell(GObject):
     def check_energy(self):
         if self.energy <= 0:
             self.die()
-        elif self.energy >= 1000:
+        elif self.energy >= self.dna['born_energy']:
             self.born()
-            self.energy -= 700
+            self.energy -= self.dna['birth_losses']
 
     def next_step(self, goal):
         pos = pygame.math.Vector2(self.rect.center)
         goal_pos = pygame.math.Vector2(goal.rect.center)
         dist = goal_pos - pos
-        if all(list(map(lambda q: abs(q) > self.size / 2, dist))):
-            self.speed.update(self.size if dist.x >= 0 else -self.size,
-                              self.size if dist.y >= 0 else -self.size)
+        if abs(dist.x) > self.size / 2 and abs(dist.y) > self.size / 2:
+            self.speed.update(self.size if dist.x >= self.size / 2 else -self.size,
+                              self.size if dist.y >= self.size / 2 else -self.size)
+        elif abs(dist.x) > self.size / 2 > abs(dist.y):
+            self.speed.update(self.size if dist.x > 0 else -self.size, 0)
+        elif abs(dist.y) > self.size / 2 > abs(dist.x):
+            self.speed.update(0, self.size if dist.y > 0 else -self.size)
         else:
-            if dist.x <= self.size / 2:
-                self.speed.update(0, self.size if dist.y > self.size / 2 else -self.size)
-            elif dist.y <= self.size / 2:
-                self.speed.update(self.size if dist.x > self.size / 2 else -self.size, 0)
+            self.speed.update(self.size if dist.x > 0 else -self.size,
+                              self.size if dist.y > 0 else -self.size)
 
     def update(self):
         self.energy -= 1
@@ -106,20 +113,3 @@ class Cell(GObject):
                          color=Constants.WHITE.value)
         self.sight.update(self.rect.x - ((self.sight.size / 2) - (self.size / 2)),
                           self.rect.y - ((self.sight.size / 2) - (self.size / 2)))
-
-
-class Sight(GObject):
-    def __init__(self, x, y):
-        pygame.sprite.Sprite.__init__(self)
-        self.size = 300
-        self.image = pygame.Surface((self.size, self.size))
-        self.image.set_alpha(0)
-        self.image.fill(Constants.YELLOW.value)
-        self.rect = self.image.get_rect()
-        self.rect.centerx = x
-        self.rect.bottom = y
-
-    def update(self, x, y):
-        self.rect.x = x
-        self.rect.y = y
-        pygame.display.get_surface().blit(self.image, (x, y))
