@@ -58,7 +58,7 @@ class Cell(GObject):
     def check_energy(self):
         if self.energy <= 0:
             self.die()
-        elif self.energy >= self.dna['born_energy']:
+        elif self.energy >= self.dna['energy_for_born']:
             self.born()
             self.energy -= self.dna['birth_losses']
 
@@ -78,7 +78,7 @@ class Cell(GObject):
                               self.size if dist.y > 0 else -self.size)
 
     def update(self):
-        self.energy -= 1
+        self.energy -= self.size // 10
         self.check_energy()
         if not self.goal:
             for food in GObject.food:
