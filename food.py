@@ -14,7 +14,3 @@ class Food(GObject):
         self.rect = self.image.get_rect()
         self.rect.centerx = random.randint(2, Constants.WIDTH.value - 1)
         self.rect.bottom = random.randint(2, Constants.HEIGHT.value - 1)
-
-    def __repr__(self):
-        dt = str(datetime.datetime.now()).split()[1]
-        return f'{dt}'
