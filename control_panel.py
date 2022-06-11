@@ -36,17 +36,17 @@ class ControlPanel(GObject):
 
         self.count_of_extinction = Text(30)
         self.fps = Text(30)
+        self.duration = Text(30)
         self.current_food = Text(30)
         self.total_food = Text(30)
         self.current_population = Text(30)
         self.total_born = Text(30)
 
     def update(self):
-        pygame.display.get_surface().blit(self.image, (self.rect.x, self.rect.y))
         self.count_of_extinction.update(text=f'Count of extinction: {GObject.count_of_extinction}',
                                xy=(Constants.WIDTH.value - 150, Constants.HEIGHT.value - 210),
                                color=Constants.BLACK.value)
-        self.fps.update(text=f'Duration: {GObject.duration // 60}m or {GObject.duration // 3600}h',
+        self.duration.update(text=f'Duration: {GObject.duration // 60}m or {GObject.duration // 3600}h',
                         xy=(Constants.WIDTH.value - 150, Constants.HEIGHT.value - 180),
                         color=Constants.BLACK.value)
         self.fps.update(text=f'FPS: {GObject.fps}',
@@ -66,3 +66,15 @@ class ControlPanel(GObject):
                                color=Constants.BLACK.value)
         self.population_graph.update()
         self.current_food_graph.update()
+
+    def draw(self):
+        pygame.display.get_surface().blit(self.image, (self.rect.x, self.rect.y))
+        self.count_of_extinction.draw()
+        self.duration.draw()
+        self.fps.draw()
+        self.current_food.draw()
+        self.total_food.draw()
+        self.current_population.draw()
+        self.total_born.draw()
+        self.population_graph.draw()
+        self.current_food_graph.draw()
