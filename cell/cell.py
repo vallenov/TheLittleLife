@@ -9,7 +9,9 @@ from TheLittleLife.cell.genotype import Genotype
 
 class Cell(GObject):
 
-    def __init__(self, x=Constants.WIDTH.value // 2, y=Constants.HEIGHT.value // 2, genotype=None):
+    def __init__(self, x=random.randint(10, Constants.WIDTH.value - 10),
+                 y=random.randint(10, Constants.HEIGHT.value - 10),
+                 genotype=None):
         pygame.sprite.Sprite.__init__(self)
         self.gen = Genotype() if not genotype else Genotype.transfer_genotype(genotype)
         self.dna = self.gen.dna
@@ -54,6 +56,16 @@ class Cell(GObject):
             GObject.all_objects.remove(food)
             self.energy += food.energy
             self.goal = None
+            del food
+
+    def kill_cell(self, cell):
+        if abs((sum(cell.dna['color']) / 3) - (sum(self.dna['color']) / 3)) > 5:
+            if self.size > cell.size:
+                GObject.cells.remove(cell)
+                GObject.all_objects.remove(cell)
+                if self.energy < self.dna['max_energy']:
+                    self.energy += cell.energy // 5
+                del cell
 
     def check_energy(self):
         if self.energy <= 0:
@@ -80,6 +92,9 @@ class Cell(GObject):
     def update(self):
         self.energy -= self.size // 10
         self.check_energy()
+        for cell in GObject.cells:
+            if self != cell and self.rect.colliderect(cell.rect):
+                self.kill_cell(cell)
         if not self.goal:
             for food in GObject.food:
                 if self.sight.rect.colliderect(food.rect):
