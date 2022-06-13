@@ -8,7 +8,7 @@ class Genotype:
             'size': random.randint(10, 16),
             'sight_distance': random.randint(200, 300),
             'anger': random.randint(0, 100),
-            'color': (random.randint(0, 256), random.randint(0, 256), random.randint(0, 256)),
+            'color': (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)),
             'max_energy': random.randint(800, 1500),
             'birth_losses': random.randint(600, 800)
         }

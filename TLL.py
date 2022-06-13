@@ -2,7 +2,7 @@ import pygame
 import random
 from GObject import GObject, Constants
 from wall import Wall
-from cell import Cell
+from TheLittleLife.cell.cell import Cell
 from food import Food
 from control_panel import ControlPanel
 
@@ -21,7 +21,7 @@ class Game:
     FPS = 1
 
     work_time = 0
-    food_respawn = 20
+    food_respawn = 10
 
     @staticmethod
     def walls_generate():
@@ -51,11 +51,12 @@ class Game:
         running = True
         for _ in range(1):
             self.spawn()
-        for _ in range(5):
-            self.new_food()
+        # for _ in range(100):
+        #     self.new_food()
         self.prev_work_time = 0
         while running:
             self.clock.tick(self.FPS)
+            Game.screen.fill(Constants.GREEN.value)
             if not GObject.cells:
                 GObject.count_of_extinction += 1
                 self.spawn()
@@ -66,7 +67,7 @@ class Game:
                 GObject.current_food_list.append(len(GObject.food))
             if not (self.work_time % self.food_respawn):
                 self.new_food()
-                self.prev_work_time = self.work_time
+                #self.prev_work_time = self.work_time
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -86,20 +87,23 @@ class Game:
 
             # while len(GObject.food.sprites()) < 500:
             #         self.new_food()
-            Game.screen.fill(Constants.GREEN.value)
+
+            for cell in GObject.cells:
+                cell.update()
+            control_panel.update()
 
             GObject.food.draw(Game.screen)
 
-            GObject.cells.update()
-            GObject.control_panel.update()
-            # GObject.all_objects.update()
+            for cell in GObject.cells:
+                cell.draw()
 
+            control_panel.draw()
             # Рендеринг
             pygame.display.flip()
 
             Game.work_time += Game.FPS
             GObject.fps = self.FPS
-            GObject.duration = self.work_time #// Game.FPS
+            GObject.duration = self.work_time # Game.FPS
 
         pygame.quit()
 

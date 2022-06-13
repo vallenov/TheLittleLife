@@ -9,11 +9,15 @@ class Text(GObject):
         self.font = pygame.font.SysFont(pygame.font.match_font('arial'), self.size)
         self.text = ''
         self.angle = 0
+        self.text_surface = self.font.render(str(self.text), True, Constants.BLACK.value)
+        self.text_rect = self.text_surface.get_rect()
 
     def update(self, xy: tuple, color: tuple, text=''):
-        text = self.text if self.text != '' else text
-        text_surface = self.font.render(str(text), True, color)
-        text_surface = pygame.transform.rotate(text_surface, self.angle)
-        text_rect = text_surface.get_rect()
-        text_rect.midtop = xy
-        pygame.display.get_surface().blit(text_surface, text_rect)
+        self.text = text if text != '' else self.text
+        self.text_surface = self.font.render(str(self.text), True, color)
+        self.text_surface = pygame.transform.rotate(self.text_surface, self.angle)
+        self.text_rect = self.text_surface.get_rect()
+        self.text_rect.midtop = xy
+
+    def draw(self):
+        pygame.display.get_surface().blit(self.text_surface, self.text_rect)

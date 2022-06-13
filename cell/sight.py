@@ -16,4 +16,6 @@ class Sight(GObject):
     def update(self, x, y):
         self.rect.x = x
         self.rect.y = y
-        pygame.display.get_surface().blit(self.image, (x, y))
+
+    def draw(self):
+        pygame.display.get_surface().blit(self.image, (self.rect.x, self.rect.y))
