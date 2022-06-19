@@ -9,9 +9,7 @@ from TheLittleLife.cell.genotype import Genotype
 
 class Cell(GObject):
 
-    def __init__(self, x=random.randint(10, Constants.WIDTH.value - 10),
-                 y=random.randint(10, Constants.HEIGHT.value - 10),
-                 genotype=None):
+    def __init__(self, x=None, y=None, genotype=None):
         pygame.sprite.Sprite.__init__(self)
         self.gen = Genotype() if not genotype else Genotype.transfer_genotype(genotype)
         self.dna = self.gen.dna
@@ -21,8 +19,8 @@ class Cell(GObject):
         self.image = pygame.Surface((self.size, self.size))
         self.image.fill(self.dna['color'])
         self.rect = self.image.get_rect()
-        self.rect.centerx = x
-        self.rect.centery = y
+        self.rect.centerx = x if x else random.randint(10, Constants.WIDTH.value - 10)
+        self.rect.centery = y if y else random.randint(10, Constants.HEIGHT.value - 10)
 
         self.text = Text(20)
         self.sight = Sight(self.rect.x, self.rect.y, self.dna['sight_distance'])
@@ -30,7 +28,7 @@ class Cell(GObject):
 
         self.speed = self.rand_speed()
 
-        self.position = pygame.math.Vector2(x, y)
+        self.position = pygame.math.Vector2(self.rect.centerx, self.rect.centery)
 
     def rand_speed(self):
         return pygame.math.Vector2(random.choice([-1, 0, 1]) * self.size, random.choice([-1, 0, 1]) * self.size)
