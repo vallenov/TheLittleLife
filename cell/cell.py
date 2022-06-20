@@ -11,11 +11,10 @@ class Cell(GObject):
 
     def __init__(self, x=None, y=None, genotype=None):
         pygame.sprite.Sprite.__init__(self)
-        self.gen = Genotype() if not genotype else Genotype.transfer_genotype(genotype)
-        self.dna = self.gen.dna
-        print(self.gen)
+        self.genotype = Genotype() if not genotype else Genotype.transfer_genotype(genotype)
+        self.dna = self.genotype.dna
         self.energy = 500
-        self.size = self.dna['size']
+        self.size = self.dna['size'].value
         self.image = pygame.Surface((self.size, self.size))
         self.image.fill(self.dna['color'])
         self.rect = self.image.get_rect()
@@ -37,8 +36,15 @@ class Cell(GObject):
         dt = str(datetime.datetime.now()).split()[1]
         return f'{dt}'
 
+    def __del__(self):
+        for _, g in self.dna.items():
+            if not (isinstance(g, int) or isinstance(g, tuple)):
+                del g
+        del self.genotype
+        del self
+
     def born(self):
-        new_life = Cell(x=self.rect.x, y=self.rect.y, genotype=self.gen)
+        new_life = Cell(x=self.rect.x, y=self.rect.y, genotype=self.genotype)
         GObject.count_of_cells_ever += 1
         GObject.cells.add(new_life)
         GObject.all_objects.add(new_life)
