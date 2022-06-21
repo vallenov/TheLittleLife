@@ -22,7 +22,7 @@ class Cell(GObject):
         self.rect.centery = y if y else random.randint(10, Constants.HEIGHT.value - 10)
 
         self.text = Text(20)
-        self.sight = Sight(self.rect.x, self.rect.y, self.dna['sight_distance'])
+        self.sight = Sight(self.rect.x, self.rect.y, self.dna['sight_distance'].value)
         self.goal = None
 
         self.speed = self.rand_speed()

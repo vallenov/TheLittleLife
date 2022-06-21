@@ -7,7 +7,7 @@ class Genotype:
     def __init__(self):
         self.dna = {
             'size': Size(random.randint(10, 16)),
-            'sight_distance': random.randint(200, 300),
+            'sight_distance': SightDistance(random.randint(200, 400)),
             'anger': random.randint(0, 100),
             'color': (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)),
             'max_energy': random.randint(800, 1500),
@@ -49,10 +49,11 @@ class Genotype:
     def mutation(self, genotype):
         new_dna = genotype.dna.copy()
         new_dna['size'] = self.dna['size'].mutation()
-        new_dna['sight_distance'] = self.rand_change(val=new_dna['sight_distance'])
+        new_dna['sight_distance'] = self.dna['sight_distance'].mutation()
         new_dna['anger'] = self.rand_change(val=new_dna['anger'])
         new_dna['color'] = self.rand_change(val=new_dna['color'], min_val=0, max_val=255)
         new_dna['max_energy'] = self.rand_change(val=new_dna['max_energy'])
         new_dna['birth_losses'] = self.rand_change(val=new_dna['birth_losses'])
         new_dna['energy_for_born'] = self.rand_change(val=new_dna['energy_for_born'])
         self.dna = new_dna
+        print(new_dna)
