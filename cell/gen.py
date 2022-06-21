@@ -15,12 +15,12 @@ class Gen:
 
     def mutation(self):
         rand = random.randint(0, 100)
+        diff = 0
         for k in self.sorted_map_keys:
-            if Size.map[k] <= rand:
-                diff = Size.map[k]
+            diff = self.map[k]
+            if k > rand:
+                diff = self.map[k]
                 break
-        else:
-            diff = self.map[-1]
         diff = random.choice([diff, -diff])
         new_value = None
         if self.min_value <= self.value + diff <= self.max_value:
@@ -72,3 +72,55 @@ class SightDistance(Gen):
 
     def mutation(self):
         return SightDistance(super().mutation())
+
+
+class Anger(Gen):
+    min_value = 0
+    max_value = 100
+    map = {
+        1: 10,
+        3: 8,
+        10: 5,
+        30: 3,
+        40: 2,
+        50: 1
+    }
+    sorted_map_keys = sorted(map.keys())
+
+    def __init__(self, value=None):
+        super().__init__()
+        self.value = self.min_value if not value else value
+
+    def mutation(self):
+        return Anger(super().mutation())
+
+
+class Color(Gen):
+    min_value = 0
+    max_value = 255
+    map = {
+        1: 50,
+        3: 40,
+        10: 30,
+        30: 20,
+        40: 10,
+        50: 5
+    }
+    sorted_map_keys = sorted(map.keys())
+
+    def __init__(self, value=None):
+        super().__init__()
+        self.value = self.min_value if not value else value
+
+    def mutation(self):
+        rand_grb = random.randint(0, 2)
+        new_color = []
+        for col_index in range(len(self.value)):
+            if col_index == rand_grb:
+                tmp = self.value
+                self.value = self.value[rand_grb]
+                new_color.append(super().mutation())
+                self.value = tmp
+                continue
+            new_color.append(self.value[col_index])
+        return Color(tuple(new_color))
