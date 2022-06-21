@@ -1,15 +1,21 @@
 import random
 from typing import Optional
-from cell.gen import Size, SightDistance
+from cell.gen import (
+    Size,
+    SightDistance,
+    Anger,
+    Color,
+)
 
 
 class Genotype:
+
     def __init__(self):
         self.dna = {
             'size': Size(random.randint(10, 16)),
             'sight_distance': SightDistance(random.randint(200, 400)),
-            'anger': random.randint(0, 100),
-            'color': (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)),
+            'anger': Anger(random.randint(0, 100)),
+            'color': Color((random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))),
             'max_energy': random.randint(800, 1500),
             'birth_losses': random.randint(600, 800)
         }
@@ -47,13 +53,11 @@ class Genotype:
             return tuple(lst)
 
     def mutation(self, genotype):
-        new_dna = genotype.dna.copy()
-        new_dna['size'] = self.dna['size'].mutation()
-        new_dna['sight_distance'] = self.dna['sight_distance'].mutation()
-        new_dna['anger'] = self.rand_change(val=new_dna['anger'])
-        new_dna['color'] = self.rand_change(val=new_dna['color'], min_val=0, max_val=255)
-        new_dna['max_energy'] = self.rand_change(val=new_dna['max_energy'])
-        new_dna['birth_losses'] = self.rand_change(val=new_dna['birth_losses'])
-        new_dna['energy_for_born'] = self.rand_change(val=new_dna['energy_for_born'])
-        self.dna = new_dna
-        print(new_dna)
+        self.dna = genotype.dna.copy()
+        self.dna['size'] = self.dna['size'].mutation()
+        self.dna['sight_distance'] = self.dna['sight_distance'].mutation()
+        self.dna['anger'] = self.dna['anger'].mutation()
+        self.dna['color'] = self.dna['color'].mutation()
+        self.dna['max_energy'] = self.rand_change(val=self.dna['max_energy'])
+        self.dna['birth_losses'] = self.rand_change(val=self.dna['birth_losses'])
+        self.dna['energy_for_born'] = self.rand_change(val=self.dna['energy_for_born'])
