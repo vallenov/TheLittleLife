@@ -124,3 +124,66 @@ class Color(Gen):
                 continue
             new_color.append(self.value[col_index])
         return Color(tuple(new_color))
+
+
+class MaxEnergy(Gen):
+    min_value = 800
+    max_value = 2000
+    map = {
+        1: 70,
+        3: 60,
+        10: 50,
+        30: 40,
+        40: 30,
+        50: 10
+    }
+    sorted_map_keys = sorted(map.keys())
+
+    def __init__(self, value=None):
+        super().__init__()
+        self.value = self.min_value if not value else value
+
+    def mutation(self):
+        return MaxEnergy(super().mutation())
+
+
+class BirthLosses(Gen):
+    min_value = 600
+    max_value = MaxEnergy.min_value
+    map = {
+        1: 70,
+        3: 60,
+        10: 30,
+        30: 15,
+        40: 10,
+        50: 5
+    }
+    sorted_map_keys = sorted(map.keys())
+
+    def __init__(self, value=None):
+        super().__init__()
+        self.value = self.min_value if not value else value
+
+    def mutation(self):
+        return BirthLosses(super().mutation())
+
+
+class EnergyForBorn(Gen):
+    min_value = 700
+    max_value = 1500
+    map = {
+        1: 70,
+        3: 60,
+        10: 30,
+        30: 15,
+        40: 10,
+        50: 5
+    }
+    sorted_map_keys = sorted(map.keys())
+
+    def __init__(self, value=None):
+        super().__init__()
+        self.value = self.min_value if not value else value
+
+    def mutation(self):
+        return EnergyForBorn(super().mutation())
