@@ -11,19 +11,18 @@ class Cell(GObject):
 
     def __init__(self, x=None, y=None, genotype=None):
         pygame.sprite.Sprite.__init__(self)
-        self.gen = Genotype() if not genotype else Genotype.transfer_genotype(genotype)
-        self.dna = self.gen.dna
-        print(self.gen)
+        self.genotype = Genotype() if not genotype else Genotype.transfer_genotype(genotype)
+        self.dna = self.genotype.dna
         self.energy = 500
-        self.size = self.dna['size']
+        self.size = self.dna['size'].value
         self.image = pygame.Surface((self.size, self.size))
-        self.image.fill(self.dna['color'])
+        self.image.fill(self.dna['color'].value)
         self.rect = self.image.get_rect()
         self.rect.centerx = x if x else random.randint(10, Constants.WIDTH.value - 10)
         self.rect.centery = y if y else random.randint(10, Constants.HEIGHT.value - 10)
 
         self.text = Text(20)
-        self.sight = Sight(self.rect.x, self.rect.y, self.dna['sight_distance'])
+        self.sight = Sight(self.rect.x, self.rect.y, self.dna['sight_distance'].value)
         self.goal = None
 
         self.speed = self.rand_speed()
@@ -38,7 +37,8 @@ class Cell(GObject):
         return f'{dt}'
 
     def born(self):
-        new_life = Cell(x=self.rect.x, y=self.rect.y, genotype=self.gen)
+        new_life = Cell(x=self.rect.x, y=self.rect.y, genotype=self.genotype)
+        print(self.genotype)
         GObject.count_of_cells_ever += 1
         GObject.cells.add(new_life)
         GObject.all_objects.add(new_life)
@@ -49,7 +49,7 @@ class Cell(GObject):
         del self
 
     def eat(self, food):
-        if self.energy < self.dna['max_energy']:
+        if self.energy < self.dna['max_energy'].value:
             GObject.food.remove(food)
             GObject.all_objects.remove(food)
             self.energy += food.energy
@@ -57,20 +57,20 @@ class Cell(GObject):
             del food
 
     def kill_cell(self, cell):
-        if abs((sum(cell.dna['color']) / 3) - (sum(self.dna['color']) / 3)) > 5:
+        if abs((sum(cell.dna['color'].value) / 3) - (sum(self.dna['color'].value) / 3)) > 5:
             if self.size > cell.size:
                 GObject.cells.remove(cell)
                 GObject.all_objects.remove(cell)
-                if self.energy < self.dna['max_energy']:
+                if self.energy < self.dna['max_energy'].value:
                     self.energy += cell.energy // 5
                 del cell
 
     def check_energy(self):
         if self.energy <= 0:
             self.die()
-        elif self.energy >= self.dna['energy_for_born']:
+        elif self.energy >= self.dna['energy_for_born'].value:
             self.born()
-            self.energy -= self.dna['birth_losses']
+            self.energy -= self.dna['birth_losses'].value
 
     def next_step(self, goal):
         pos = pygame.math.Vector2(self.rect.center)

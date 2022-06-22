@@ -44,11 +44,11 @@ class ControlPanel(GObject):
 
     def update(self):
         self.count_of_extinction.update(text=f'Count of extinction: {GObject.count_of_extinction}',
-                               xy=(Constants.WIDTH.value - 150, Constants.HEIGHT.value - 210),
-                               color=Constants.BLACK.value)
+                                        xy=(Constants.WIDTH.value - 150, Constants.HEIGHT.value - 210),
+                                        color=Constants.BLACK.value)
         self.duration.update(text=f'Duration: {GObject.duration // 60}m or {GObject.duration // 3600}h',
-                        xy=(Constants.WIDTH.value - 150, Constants.HEIGHT.value - 180),
-                        color=Constants.BLACK.value)
+                             xy=(Constants.WIDTH.value - 150, Constants.HEIGHT.value - 180),
+                             color=Constants.BLACK.value)
         self.fps.update(text=f'FPS: {GObject.fps}',
                         xy=(Constants.WIDTH.value - 150, Constants.HEIGHT.value - 150),
                         color=Constants.BLACK.value)
