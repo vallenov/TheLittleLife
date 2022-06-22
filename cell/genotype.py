@@ -5,6 +5,9 @@ from cell.gen import (
     SightDistance,
     Anger,
     Color,
+    MaxEnergy,
+    BirthLosses,
+    EnergyForBorn,
 )
 
 
@@ -16,10 +19,13 @@ class Genotype:
             'sight_distance': SightDistance(random.randint(200, 400)),
             'anger': Anger(random.randint(0, 100)),
             'color': Color((random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))),
-            'max_energy': random.randint(800, 1500),
-            'birth_losses': random.randint(600, 800)
+            'max_energy': MaxEnergy(random.randint(800, 1500)),
+            'birth_losses': BirthLosses(random.randint(600, 800)),
+            'energy_for_born': EnergyForBorn(random.randint(600, 800))
         }
-        self.dna['energy_for_born'] = random.randint(self.dna['max_energy'] - 300, self.dna['max_energy'])
+        self.dna['energy_for_born'] = EnergyForBorn(
+            random.randint(self.dna['max_energy'].value // 2, self.dna['max_energy'].value)
+        )
 
     def __repr__(self):
         return f'(\n{"".join([fr"   {gen}: {val}{chr(10)}" for gen, val in self.dna.items()])})'
@@ -58,6 +64,6 @@ class Genotype:
         self.dna['sight_distance'] = self.dna['sight_distance'].mutation()
         self.dna['anger'] = self.dna['anger'].mutation()
         self.dna['color'] = self.dna['color'].mutation()
-        self.dna['max_energy'] = self.rand_change(val=self.dna['max_energy'])
-        self.dna['birth_losses'] = self.rand_change(val=self.dna['birth_losses'])
-        self.dna['energy_for_born'] = self.rand_change(val=self.dna['energy_for_born'])
+        self.dna['max_energy'] = self.dna['max_energy'].mutation()
+        self.dna['birth_losses'] = self.dna['birth_losses'].mutation()
+        self.dna['energy_for_born'] = self.dna['energy_for_born'].mutation()
