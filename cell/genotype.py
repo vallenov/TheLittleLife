@@ -1,6 +1,7 @@
 import random
 from cell.gen import (
     Size,
+    Speed,
     SightDistance,
     Anger,
     Color,
@@ -15,6 +16,7 @@ class Genotype:
     def __init__(self):
         self.dna = {
             'size': Size(random.randint(10, 16)),
+            'speed': Speed(random.randint(8, 10)),
             'sight_distance': SightDistance(random.randint(200, 400)),
             'anger': Anger(random.randint(0, 100)),
             'color': Color((random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))),
@@ -25,6 +27,9 @@ class Genotype:
         self.dna['energy_for_born'] = EnergyForBorn(
             random.randint(self.dna['max_energy'].value // 2, self.dna['max_energy'].value)
         )
+        self.dna['speed'].value = self.dna['size'].value \
+            if self.dna['speed'].value > self.dna['size'].value \
+            else self.dna['speed'].value
 
     def __repr__(self):
         return f'(\n{"".join([fr"   {gen}: {val}{chr(10)}" for gen, val in self.dna.items()])})'
@@ -40,6 +45,10 @@ class Genotype:
     def mutation(self, genotype):
         self.dna = genotype.dna.copy()
         self.dna['size'] = self.dna['size'].mutation()
+        self.dna['speed'] = self.dna['speed'].mutation()
+        self.dna['speed'].value = self.dna['size'].value \
+            if self.dna['speed'].value > self.dna['size'].value \
+            else self.dna['speed'].value
         self.dna['sight_distance'] = self.dna['sight_distance'].mutation()
         self.dna['anger'] = self.dna['anger'].mutation()
         self.dna['color'] = self.dna['color'].mutation()
