@@ -37,12 +37,12 @@ class Size(Gen):
     min_value = 10
     max_value = 100
     map = {
-        1: 10,
-        3: 8,
-        10: 5,
-        30: 3,
-        40: 2,
-        50: 1
+        10: 10,
+        20: 8,
+        30: 5,
+        40: 3,
+        60: 2,
+        90: 1
     }
     sorted_map_keys = sorted(map.keys())
 
@@ -52,6 +52,27 @@ class Size(Gen):
 
     def mutation(self):
         return Size(super().new_value())
+
+
+class Speed(Gen):
+    min_value = 10
+    max_value = 40
+    map = {
+        10: 6,
+        20: 5,
+        30: 4,
+        40: 3,
+        60: 2,
+        90: 1
+    }
+    sorted_map_keys = sorted(map.keys())
+
+    def __init__(self, value=None):
+        super().__init__()
+        self.value = self.min_value if not value else value
+
+    def mutation(self):
+        return Speed(super().new_value())
 
 
 class SightDistance(Gen):
