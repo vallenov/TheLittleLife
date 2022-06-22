@@ -1,5 +1,4 @@
 import random
-from typing import Optional
 from cell.gen import (
     Size,
     SightDistance,
@@ -37,26 +36,6 @@ class Genotype:
         new_genotype = Genotype()
         new_genotype.mutation(genotype)
         return new_genotype
-
-    @staticmethod
-    def rand_change(val: Optional[int], min_val: int = None, max_val: int = None):
-        tmp = [i for i in range(-5, 0)] + [j for j in range(1, 6)]
-        if isinstance(val, int):
-            new_val = val + random.choice(tmp)
-            if min_val is not None:
-                new_val = min_val if new_val <= min_val else new_val
-            if max_val is not None:
-                new_val = max_val if new_val >= max_val else new_val
-            return new_val
-        elif isinstance(val, tuple):
-            lst = list(val)
-            rand = random.randint(0, len(val) - 1)
-            lst[rand] += random.choice(tmp)
-            if min_val is not None:
-                lst[rand] = min_val if lst[rand] <= min_val else lst[rand]
-            if max_val is not None:
-                lst[rand] = max_val if lst[rand] >= max_val else lst[rand]
-            return tuple(lst)
 
     def mutation(self, genotype):
         self.dna = genotype.dna.copy()
