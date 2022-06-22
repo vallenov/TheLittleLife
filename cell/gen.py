@@ -13,7 +13,7 @@ class Gen:
     def __repr__(self):
         return f'<{type(self).__name__} {self.value}>'
 
-    def mutation(self):
+    def new_value(self, val=None):
         rand = random.randint(0, 100)
         diff = 0
         for k in self.sorted_map_keys:
@@ -22,14 +22,15 @@ class Gen:
                 diff = self.map[k]
                 break
         diff = random.choice([diff, -diff])
-        new_value = None
-        if self.min_value <= self.value + diff <= self.max_value:
-            new_value = self.value + diff
-        elif self.value + diff >= self.max_value:
-            new_value = self.max_value
-        elif self.value + diff <= self.min_value:
-            new_value = self.min_value
-        return new_value
+        new_val = None
+        val = self.value if val is None else val
+        if self.min_value <= val + diff <= self.max_value:
+            new_val = val + diff
+        elif val + diff >= self.max_value:
+            new_val = self.max_value
+        elif val + diff <= self.min_value:
+            new_val = self.min_value
+        return new_val
 
 
 class Size(Gen):
@@ -50,7 +51,7 @@ class Size(Gen):
         self.value = self.min_value if not value else value
 
     def mutation(self):
-        return Size(super().mutation())
+        return Size(super().new_value())
 
 
 class SightDistance(Gen):
@@ -71,7 +72,7 @@ class SightDistance(Gen):
         self.value = self.min_value if not value else value
 
     def mutation(self):
-        return SightDistance(super().mutation())
+        return SightDistance(super().new_value())
 
 
 class Anger(Gen):
@@ -92,7 +93,7 @@ class Anger(Gen):
         self.value = self.min_value if not value else value
 
     def mutation(self):
-        return Anger(super().mutation())
+        return Anger(super().new_value())
 
 
 class Color(Gen):
@@ -113,16 +114,9 @@ class Color(Gen):
         self.value = self.min_value if not value else value
 
     def mutation(self):
-        rand_grb = random.randint(0, 2)
         new_color = []
         for col_index in range(len(self.value)):
-            if col_index == rand_grb:
-                tmp = self.value
-                self.value = self.value[rand_grb]
-                new_color.append(super().mutation())
-                self.value = tmp
-                continue
-            new_color.append(self.value[col_index])
+            new_color.append(super().new_value(val=self.value[col_index]))
         return Color(tuple(new_color))
 
 
@@ -144,7 +138,7 @@ class MaxEnergy(Gen):
         self.value = self.min_value if not value else value
 
     def mutation(self):
-        return MaxEnergy(super().mutation())
+        return MaxEnergy(super().new_value())
 
 
 class BirthLosses(Gen):
@@ -165,7 +159,7 @@ class BirthLosses(Gen):
         self.value = self.min_value if not value else value
 
     def mutation(self):
-        return BirthLosses(super().mutation())
+        return BirthLosses(super().new_value())
 
 
 class EnergyForBorn(Gen):
@@ -186,4 +180,4 @@ class EnergyForBorn(Gen):
         self.value = self.min_value if not value else value
 
     def mutation(self):
-        return EnergyForBorn(super().mutation())
+        return EnergyForBorn(super().new_value())
