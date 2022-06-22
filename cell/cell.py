@@ -15,6 +15,7 @@ class Cell(GObject):
         self.dna = self.genotype.dna
         self.energy = 500
         self.size = self.dna['size'].value
+        self.speed = self.dna['speed'].value
         self.image = pygame.Surface((self.size, self.size))
         self.image.fill(self.dna['color'].value)
         self.rect = self.image.get_rect()
@@ -25,12 +26,13 @@ class Cell(GObject):
         self.sight = Sight(self.rect.x, self.rect.y, self.dna['sight_distance'].value)
         self.goal = None
 
-        self.speed = self.rand_speed()
+        self.direction = self.rand_direction()
 
         self.position = pygame.math.Vector2(self.rect.centerx, self.rect.centery)
 
-    def rand_speed(self):
-        return pygame.math.Vector2(random.choice([-1, 0, 1]) * self.size, random.choice([-1, 0, 1]) * self.size)
+    def rand_direction(self):
+        return pygame.math.Vector2(random.choice([-1, 0, 1]) * self.speed,
+                                   random.choice([-1, 0, 1]) * self.speed)
 
     def __repr__(self):
         dt = str(datetime.datetime.now()).split()[1]
@@ -77,15 +79,15 @@ class Cell(GObject):
         goal_pos = pygame.math.Vector2(goal.rect.center)
         dist = goal_pos - pos
         if abs(dist.x) > self.size / 2 and abs(dist.y) > self.size / 2:
-            self.speed.update(self.size if dist.x >= self.size / 2 else -self.size,
-                              self.size if dist.y >= self.size / 2 else -self.size)
+            self.direction.update(self.speed if dist.x >= self.size / 2 else -self.speed,
+                                  self.speed if dist.y >= self.size / 2 else -self.speed)
         elif abs(dist.x) > self.size / 2 > abs(dist.y):
-            self.speed.update(self.size if dist.x > 0 else -self.size, 0)
+            self.direction.update(self.speed if dist.x > 0 else -self.speed, 0)
         elif abs(dist.y) > self.size / 2 > abs(dist.x):
-            self.speed.update(0, self.size if dist.y > 0 else -self.size)
+            self.direction.update(0, self.speed if dist.y > 0 else -self.speed)
         else:
-            self.speed.update(self.size if dist.x > 0 else -self.size,
-                              self.size if dist.y > 0 else -self.size)
+            self.direction.update(self.speed if dist.x > 0 else -self.speed,
+                                  self.speed if dist.y > 0 else -self.speed)
 
     def update(self):
         self.energy -= self.size // 10
@@ -99,7 +101,7 @@ class Cell(GObject):
                     self.goal = food if self.goal is None else self.goal
                     break
             if not self.goal and random.randint(0, 100) < 5:
-                self.speed = self.rand_speed()
+                self.direction = self.rand_direction()
         elif not self.sight.rect.colliderect(self.goal.rect):
             self.goal = None
         else:
@@ -118,7 +120,7 @@ class Cell(GObject):
         elif self.rect.centery <= 0:
             self.position.y = Constants.HEIGHT.value
 
-        self.position += self.speed.x, self.speed.y
+        self.position += self.direction.x, self.direction.y
         self.rect.center = self.position.x, self.position.y
         self.text.update(text=str(self.energy / 10), xy=(self.rect.x + 5, self.rect.y - 20),
                          color=Constants.WHITE.value)
