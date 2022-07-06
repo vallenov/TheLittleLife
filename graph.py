@@ -5,7 +5,7 @@ from text import Text
 
 
 class Graph(GObject):
-    def __init__(self, y: list, x: list, size: tuple):
+    def __init__(self, size: tuple, y: list, x: list):
         pygame.sprite.Sprite.__init__(self)
         self.x_list = x
         self.y_list = y
@@ -52,8 +52,11 @@ class Graph(GObject):
         self.x_bottom_text.update(text=str(self.x_list[-1]),
                                   xy=(self.rect.right, self.rect.bottom + self.ylabel.size // 4),
                                   color=Constants.BLACK.value)
-        self.ylabel.update(xy=(self.rect.left - self.ylabel.size // 2, self.rect.centery - self.ylabel.size * 2), color=Constants.BLACK.value)
-        self.xlabel.update(xy=(self.rect.centerx, self.rect.bottom + 5), color=Constants.BLACK.value)
+        self.ylabel.update(xy=(self.rect.left - self.ylabel.size // 2,
+                               self.rect.centery - self.ylabel.size * 2),
+                           color=Constants.BLACK.value)
+        self.xlabel.update(xy=(self.rect.centerx, self.rect.bottom + 5),
+                           color=Constants.BLACK.value)
         self.scale = len(self.x_list)
         # self.y_last_value.update(text=str(self.y_list[-1]),
         #                    xy=(self.rect.right + 10, startxy[1] - 5),
