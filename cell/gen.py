@@ -202,3 +202,24 @@ class EnergyForBorn(Gen):
 
     def mutation(self):
         return EnergyForBorn(super().new_value())
+
+
+class RunChance(Gen):
+    min_value = 0
+    max_value = 70
+    map = {
+        1: 20,
+        3: 15,
+        10: 8,
+        30: 3,
+        40: 2,
+        50: 1
+    }
+    sorted_map_keys = sorted(map.keys())
+
+    def __init__(self, value=None):
+        super().__init__()
+        self.value = self.min_value if not value else value
+
+    def mutation(self):
+        return RunChance(super().new_value())
