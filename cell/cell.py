@@ -60,12 +60,15 @@ class Cell(GObject):
 
     def kill_cell(self, cell):
         if abs((sum(cell.dna['color'].value) / 3) - (sum(self.dna['color'].value) / 3)) > 5:
-            if self.size > cell.size:
+            if self.dna['anger'].value >= cell.dna['anger'].value and not cell.is_run():
                 GObject.cells.remove(cell)
                 GObject.all_objects.remove(cell)
                 if self.energy < self.dna['max_energy'].value:
                     self.energy += cell.energy // 5
                 del cell
+
+    def is_run(self):
+        return True if random.randint(0, 100) in range(self.dna['run_chance'].value) else False
 
     def check_energy(self):
         if self.energy <= 0:
