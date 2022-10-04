@@ -59,8 +59,8 @@ class Cell(GObject):
             del food
 
     def kill_cell(self, cell):
-        if abs((sum(cell.dna['color'].value) / 3) - (sum(self.dna['color'].value) / 3)) > 5:
-            if self.dna['anger'].value >= cell.dna['anger'].value and not cell.is_run():
+        if abs((sum(cell.dna['color'].value) / 3) - (sum(self.dna['color'].value) / 3)) > 10:
+            if self.dna['anger'].value > cell.dna['anger'].value and not cell.is_run():
                 GObject.cells.remove(cell)
                 GObject.all_objects.remove(cell)
                 if self.energy < self.dna['max_energy'].value:
