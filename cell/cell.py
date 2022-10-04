@@ -44,6 +44,7 @@ class Cell(GObject):
         GObject.count_of_cells_ever += 1
         GObject.cells.add(new_life)
         GObject.all_objects.add(new_life)
+        self.energy -= self.dna['birth_losses'].value
 
     def die(self):
         GObject.all_objects.remove(self)
@@ -75,7 +76,6 @@ class Cell(GObject):
             self.die()
         elif self.energy >= self.dna['energy_for_born'].value:
             self.born()
-            self.energy -= self.dna['birth_losses'].value
 
     def next_step(self, goal):
         pos = pygame.math.Vector2(self.rect.center)
