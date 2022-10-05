@@ -42,6 +42,10 @@ class Cell(GObject):
     def hungry(self):
         return True if self.energy < self.dna['max_energy'].value else False
 
+    @property
+    def ready_to_born(self):
+        return True if self.energy >= self.dna['energy_for_born'].value else False
+
     def born(self):
         new_life = Cell(x=self.rect.x, y=self.rect.y, genotype=self.genotype)
         print(self.genotype)
@@ -76,7 +80,7 @@ class Cell(GObject):
     def check_energy(self):
         if self.energy <= 0:
             self.die()
-        elif self.energy >= self.dna['energy_for_born'].value:
+        elif self.ready_to_born:
             self.born()
 
     def next_step(self, goal):
