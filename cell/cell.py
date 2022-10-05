@@ -38,6 +38,10 @@ class Cell(GObject):
         dt = str(datetime.datetime.now()).split()[1]
         return f'{dt}'
 
+    @property
+    def hungry(self):
+        return True if self.energy < self.dna['max_energy'].value else False
+
     def born(self):
         new_life = Cell(x=self.rect.x, y=self.rect.y, genotype=self.genotype)
         print(self.genotype)
@@ -60,13 +64,11 @@ class Cell(GObject):
             del food
 
     def kill_cell(self, cell):
-        if abs((sum(cell.dna['color'].value) / 3) - (sum(self.dna['color'].value) / 3)) > 10:
+        if abs((sum(cell.dna['color'].value) / 3) - (sum(self.dna['color'].value) / 3)) > 10 and self.hungry:
             if self.dna['anger'].value > cell.dna['anger'].value and not cell.is_run():
-                GObject.cells.remove(cell)
-                GObject.all_objects.remove(cell)
                 if self.energy < self.dna['max_energy'].value:
                     self.energy += cell.energy // 5
-                del cell
+                    cell.die()
 
     def is_run(self):
         return True if random.randint(0, 100) in range(self.dna['run_chance'].value) else False
