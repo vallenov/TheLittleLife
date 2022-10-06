@@ -60,7 +60,7 @@ class Cell(GObject):
         del self
 
     def eat(self, food):
-        if self.energy < self.dna['max_energy'].value:
+        if self.hungry:
             GObject.food.remove(food)
             GObject.all_objects.remove(food)
             self.energy += food.energy
@@ -70,9 +70,8 @@ class Cell(GObject):
     def kill_cell(self, cell):
         if abs((sum(cell.dna['color'].value) / 3) - (sum(self.dna['color'].value) / 3)) > 10 and self.hungry:
             if self.dna['anger'].value > cell.dna['anger'].value and not cell.is_run():
-                if self.energy < self.dna['max_energy'].value:
-                    self.energy += cell.energy // 5
-                    cell.die()
+                self.energy += cell.energy // 5
+                cell.die()
 
     def is_run(self):
         return True if random.randint(0, 100) in range(self.dna['run_chance'].value) else False
