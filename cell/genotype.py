@@ -9,6 +9,7 @@ from cell.gen import (
     BirthLosses,
     EnergyForBorn,
     RunChance,
+    StartEnergy,
 )
 
 
@@ -24,7 +25,8 @@ class Genotype:
             'max_energy': MaxEnergy(random.randint(800, 1500)),
             'birth_losses': BirthLosses(random.randint(600, 800)),
             'energy_for_born': EnergyForBorn(random.randint(600, 800)),
-            'run_chance': RunChance(random.randint(0, 30))
+            'run_chance': RunChance(random.randint(0, 30)),
+            'start_energy': StartEnergy(random.randint(400, 700))
         }
         self.dna['energy_for_born'] = EnergyForBorn(
             random.randint(self.dna['max_energy'].value // 2, self.dna['max_energy'].value)
@@ -58,3 +60,4 @@ class Genotype:
         self.dna['birth_losses'] = self.dna['birth_losses'].mutation()
         self.dna['energy_for_born'] = self.dna['energy_for_born'].mutation()
         self.dna['run_chance'] = self.dna['run_chance'].mutation()
+        self.dna['start_energy'] = self.dna['start_energy'].mutation()
