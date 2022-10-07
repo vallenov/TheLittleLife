@@ -223,3 +223,24 @@ class RunChance(Gen):
 
     def mutation(self):
         return RunChance(super().new_value())
+
+
+class StartEnergy(Gen):
+    min_value = 400
+    max_value = 700
+    map = {
+        1: 200,
+        3: 150,
+        10: 80,
+        30: 30,
+        40: 20,
+        50: 10
+    }
+    sorted_map_keys = sorted(map.keys())
+
+    def __init__(self, value=None):
+        super().__init__()
+        self.value = self.min_value if not value else value
+
+    def mutation(self):
+        return StartEnergy(super().new_value())
