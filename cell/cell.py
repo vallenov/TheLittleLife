@@ -13,7 +13,7 @@ class Cell(GObject):
         pygame.sprite.Sprite.__init__(self)
         self.genotype = Genotype() if genotype is None else Genotype.transfer_genotype(genotype)
         self.dna = self.genotype.dna
-        self.energy = 500
+        self.energy = self.dna['start_energy'].value
         self.size = self.dna['size'].value
         self.speed = self.dna['speed'].value
         self.image = pygame.Surface((self.size, self.size))
