@@ -15,7 +15,9 @@ from cell.gen import (
 
 class Genotype:
 
-    def __init__(self):
+    def __init__(self, parent_genotype=None):
+        if parent_genotype:
+            return
         self.dna = {
             'size': Size(random.randint(10, 16)),
             'speed': Speed(random.randint(8, 10)),
