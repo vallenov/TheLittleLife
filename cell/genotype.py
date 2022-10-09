@@ -15,7 +15,9 @@ from cell.gen import (
 
 class Genotype:
 
-    def __init__(self):
+    def __init__(self, parent_genotype=None):
+        if parent_genotype:
+            return
         self.dna = {
             'size': Size(random.randint(10, 16)),
             'speed': Speed(random.randint(8, 10)),
@@ -48,16 +50,8 @@ class Genotype:
 
     def mutation(self, genotype):
         self.dna = genotype.dna.copy()
-        self.dna['size'] = self.dna['size'].mutation()
-        self.dna['speed'] = self.dna['speed'].mutation()
+        for name, gen in self.dna.items():
+            self.dna[name] = gen.mutation()
         self.dna['speed'].value = self.dna['size'].value \
             if self.dna['speed'].value > self.dna['size'].value \
             else self.dna['speed'].value
-        self.dna['sight_distance'] = self.dna['sight_distance'].mutation()
-        self.dna['anger'] = self.dna['anger'].mutation()
-        self.dna['color'] = self.dna['color'].mutation()
-        self.dna['max_energy'] = self.dna['max_energy'].mutation()
-        self.dna['birth_losses'] = self.dna['birth_losses'].mutation()
-        self.dna['energy_for_born'] = self.dna['energy_for_born'].mutation()
-        self.dna['run_chance'] = self.dna['run_chance'].mutation()
-        self.dna['start_energy'] = self.dna['start_energy'].mutation()
