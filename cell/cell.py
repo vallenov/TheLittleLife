@@ -13,7 +13,7 @@ class Cell(GObject):
         pygame.sprite.Sprite.__init__(self)
         self.genotype = Genotype() if genotype is None else Genotype.transfer_genotype(genotype)
         self.dna = self.genotype.dna
-        self.energy = 500
+        self.energy = self.dna['start_energy'].value
         self.size = self.dna['size'].value
         self.speed = self.dna['speed'].value
         self.image = pygame.Surface((self.size, self.size))
@@ -38,12 +38,21 @@ class Cell(GObject):
         dt = str(datetime.datetime.now()).split()[1]
         return f'{dt}'
 
+    @property
+    def hungry(self):
+        return True if self.energy < self.dna['max_energy'].value else False
+
+    @property
+    def ready_to_born(self):
+        return True if self.energy >= self.dna['energy_for_born'].value else False
+
     def born(self):
         new_life = Cell(x=self.rect.x, y=self.rect.y, genotype=self.genotype)
         print(self.genotype)
         GObject.count_of_cells_ever += 1
         GObject.cells.add(new_life)
         GObject.all_objects.add(new_life)
+        self.energy -= self.dna['birth_losses'].value
 
     def die(self):
         GObject.all_objects.remove(self)
@@ -51,7 +60,7 @@ class Cell(GObject):
         del self
 
     def eat(self, food):
-        if self.energy < self.dna['max_energy'].value:
+        if self.hungry:
             GObject.food.remove(food)
             GObject.all_objects.remove(food)
             self.energy += food.energy
@@ -59,13 +68,10 @@ class Cell(GObject):
             del food
 
     def kill_cell(self, cell):
-        if abs((sum(cell.dna['color'].value) / 3) - (sum(self.dna['color'].value) / 3)) > 5:
-            if self.dna['anger'].value >= cell.dna['anger'].value and not cell.is_run():
-                GObject.cells.remove(cell)
-                GObject.all_objects.remove(cell)
-                if self.energy < self.dna['max_energy'].value:
-                    self.energy += cell.energy // 5
-                del cell
+        if abs((sum(cell.dna['color'].value) / 3) - (sum(self.dna['color'].value) / 3)) > 10 and self.hungry:
+            if self.dna['anger'].value > cell.dna['anger'].value and not cell.is_run():
+                self.energy += cell.energy // 5
+                cell.die()
 
     def is_run(self):
         return True if random.randint(0, 100) in range(self.dna['run_chance'].value) else False
@@ -73,9 +79,8 @@ class Cell(GObject):
     def check_energy(self):
         if self.energy <= 0:
             self.die()
-        elif self.energy >= self.dna['energy_for_born'].value:
+        elif self.ready_to_born:
             self.born()
-            self.energy -= self.dna['birth_losses'].value
 
     def next_step(self, goal):
         pos = pygame.math.Vector2(self.rect.center)
